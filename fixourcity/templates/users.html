@@ -1,0 +1,68 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Page</title>
+    <!-- Other head content -->
+    {% comment %} <script src="{% static 'js/issues.js' %}"></script> <!-- Include the JS file here --> {% endcomment %}
+</head>
+<script>
+    document.getElementById('issueForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form from submitting the traditional way
+
+        var formData = new FormData(this); // Collect form data, including file
+
+        fetch('/your-form-submit-url/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken') // Ensure CSRF token is sent if you are using Django
+            }
+        })
+        .then(response => response.json()) // Handle the response here
+        .then(data => {
+            console.log(data); // Log response from the server
+            alert('Issue submitted successfully!'); // Show success message
+        })
+        .catch(error => {
+            console.error(error);
+            alert('Something went wrong! Please try again.');
+        });
+    });
+
+    // Function to get the CSRF token (important for Django)
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<body>
+    <h1>Hello {{ user.username }}, your role is User</h1>
+
+        
+<form id="issueForm" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" id="issueImage" name="image" />
+    <input type="text" id="issueDescription" name="description" placeholder="Describe the issue..." />
+    <button type="submit">Submit Issue</button>
+</form>
+
+
+    <!-- Add your JS file -->
+    {% comment %} <script src="{% static 'js/issues.js' %}"></script> {% endcomment %}
+</body>
+</html>
