@@ -1,0 +1,87 @@
+<!-- authority.html -->
+{% extends 'base.html' %}
+{% block content %}
+<div class="min-h-screen bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h1 class="text-2xl font-bold mb-4">Authority Dashboard</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Authority Info Card -->
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h2 class="text-xl font-semibold mb-2">Authority Details</h2>
+                    <p class="mb-2">Name: {{ authority.name }}</p>
+                    <p class="mb-2">Contact: {{ authority.contact_info }}</p>
+                    <p>Jurisdiction: {{ authority.jurisdiction }}</p>
+                </div>
+                
+                <!-- Statistics Card -->
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h2 class="text-xl font-semibold mb-2">Overview</h2>
+                    <p class="mb-2">Trending Issues: {{ trending_issues.count }}</p>
+                    <p>Pending Issues: {{ pending_issues.count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trending Issues Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Trending Issues</h2>
+            {% if trending_issues %}
+                <div class="grid gap-4">
+                    {% for issue in trending_issues %}
+                        <div class="border rounded-lg p-4 hover:bg-gray-50">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-semibold">{{ issue.title }}</h3>
+                                    <p class="text-gray-600">{{ issue.description|truncatewords:30 }}</p>
+                                    <p class="text-sm text-gray-500">Location: {{ issue.location }}</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                        {{ issue.upvotes_count }} upvotes
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <a href="{% url 'assign_contractor' issue.id %}" 
+                                   class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                    Assign Contractor
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-600">No trending issues at the moment.</p>
+            {% endif %}
+        </div>
+
+        <!-- Pending Issues Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold mb-4">Pending Issues</h2>
+            {% if pending_issues %}
+                <div class="grid gap-4">
+                    {% for issue in pending_issues %}
+                        <div class="border rounded-lg p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-semibold">{{ issue.title }}</h3>
+                                    <p class="text-gray-600">{{ issue.description|truncatewords:30 }}</p>
+                                    <p class="text-sm text-gray-500">
+                                        Assigned to: {{ issue.contractor.name }}
+                                    </p>
+                                </div>
+                                <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
+                                    Pending
+                                </span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-600">No pending issues.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

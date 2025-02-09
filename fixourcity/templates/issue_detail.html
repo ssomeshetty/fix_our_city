@@ -1,0 +1,77 @@
+
+<!-- templates/issue_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}{{ issue.title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">{{ issue.title }}</h2>
+    <div class="issue-details">
+        <p>{{ issue.description }}</p>
+        <p><strong>Location:</strong> {{ issue.location }}</p>
+        <p><strong>Status:</strong> {{ issue.get_status_display }}</p>
+        <p><strong>Reported by:</strong> {{ issue.reported_by.username }}</p>
+        <p><strong>Upvotes:</strong> <span id="upvotes-count">{{ issue.upvotes_count }}</span></p>
+        
+        {% if user.is_authenticated %}
+            <button class="btn btn-primary upvote-btn" onclick="upvoteIssue({{ issue.id }})">
+                {% if user in issue.upvotes.all %}
+                    Remove Upvote
+                {% else %}
+                    Upvote
+                {% endif %}
+            </button>
+        {% endif %}
+    </div>
+
+    <div class="images-section" style="margin-top: 2rem;">
+        <h3>Images</h3>
+        <div class="grid">
+            {% for image in images %}
+                <div class="card">
+                    <img src="{{ image.image.url }}" alt="{{ image.caption }}" style="width: 100%; border-radius: 4px;">
+                    <p>{{ image.caption }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        {% if user.is_authenticated %}
+            <a href="{% url 'upload_issue_image' issue.id %}" class="btn btn-primary">Add Image</a>
+        {% endif %}
+    </div>
+
+    <div class="comments-section" style="margin-top: 2rem;">
+        <h3>Comments</h3>
+        {% for comment in comments %}
+            <div class="card">
+                <p>{{ comment.content }}</p>
+                <small>By {{ comment.user.username }} on {{ comment.created_at }}</small>
+            </div>
+        {% endfor %}
+
+        {% if user.is_authenticated %}
+            <form method="post" style="margin-top: 1rem;">
+                {% csrf_token %}
+                {{ comment_form }}
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function upvoteIssue(issueId) {
+    fetch(`/issues/upvote/${issueId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('upvotes-count').textContent = data.upvotes_count;
+        const btn = document.querySelector('.upvote-btn');
+        btn.textContent = data.action === 'added' ? 'Remove Upvote' : 'Upvote';
+    });
+}
+</script>

@@ -1,0 +1,25 @@
+<!-- templates/create_issue.html -->
+{% extends 'base.html' %}
+
+{% block title %}Report Issue{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="card-title">Report New Issue</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label class="form-label">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div class="message message-error">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Submit Issue</button>
+    </form>
+</div>
+{% endblock %}
