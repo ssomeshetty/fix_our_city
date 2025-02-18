@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Assigned Issues</h2>
+<ul>
+    {% for assignment in contractor_assignments %}
+        <li>
+            <strong>{{ assignment.issue.title }}</strong><br>
+            <em>Location:</em> {{ assignment.issue.location }}<br>
+            <em>Status:</em> {{ assignment.status }}<br>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
+{% block styles %}
+<style>
+    /* Global Styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4; /* Light background for the overall body */
+        margin: 0;
+        padding: 20px;
+    }
+
+    /* Heading Styles */
+    h2 {
+        color: #2d3748; /* Dark color for headings */
+        margin-bottom: 20px; /* Space below the heading */
+        font-size: 24px; /* Consistent font size for headers */
+    }
+
+    /* List Styles */
+    ul {
+        list-style-type: none; /* Remove default bullet points */
+        padding: 0; /* Remove default padding */
+        max-width: 600px; /* Limit the width of the list */
+        margin: auto; /* Center the list */
+    }
+
+    /* List Item Styles */
+    li {
+        background-color: #ffffff; /* White background for list items */
+        border-radius: 8px; /* Rounded corners */
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        padding: 15px; /* Inner spacing */
+        margin-bottom: 15px; /* Space between list items */
+        transition: background-color 0.3s; /* Smooth transition for hover effects */
+    }
+
+    /* Hover Effect for List Items */
+    li:hover {
+        background-color: #f7fafc; /* Light gray on hover */
+    }
+
+    /* Strong Text Styles */
+    strong {
+        color: #3182ce; /* Accent color for issue titles */
+        font-size: 18px; /* Larger font for titles */
+    }
+
+    /* Emphasized Text Styles */
+    em {
+        color: #4a5568; /* Gray color for emphasized text */
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+        h2 {
+            font-size: 20px; /* Smaller title size for small screens */
+        }
+        li {
+            padding: 12px; /* Adjust padding for smaller screens */
+        }
+    }
+
+    @media (max-width: 480px) {
+        h2 {
+            font-size: 18px; /* Even smaller title size for extra small screens */
+        }
+        li {
+            padding: 10px; /* Further reduce padding for very small screens */
+        }
+    }
+</style>
+{% endblock %}

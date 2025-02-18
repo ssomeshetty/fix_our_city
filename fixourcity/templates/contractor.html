@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Contractor Dashboard - City Issue Tracker{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Dashboard Overview Card -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h1 class="text-2xl font-bold mb-4">Contractor Dashboard</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Overview Card -->
+                <div class="bg-blue-50 p-4 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold text-blue-700 mb-4">Overview</h2>
+                    <p class="mb-2"><strong>Active Assignments:</strong> {{ assigned_issues.count }}</p>
+                    <p><strong>Completed Issues:</strong> {{ completed_issues.count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Assignments Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Active Assignments</h2>
+            {% if assigned_issues %}
+                <div class="grid gap-4">
+                    {% for issue in assigned_issues %}
+                        <div class="card">
+                            <h3 class="card-title">{{ issue.title }}</h3>
+                            <p>{{ issue.description|truncatewords:30 }}</p>
+                            <p>Location: {{ issue.location }}</p>
+                            <p>Status: {{ issue.status }}</p>
+                            <form method="post" action="{% url 'update_issue_status' issue.id %}">
+                                {% csrf_token %}
+                                <div class="flex items-center justify-between mt-4">
+                                    <select name="status" class="form-select w-2/3 py-2 px-3 rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500">
+                                        <option value="in_progress" {% if issue.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                                        <option value="completed" {% if issue.status == 'completed' %}selected{% endif %}>Completed</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary mt-2">
+                                        Update Status
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No active assignments at the moment.</p>
+            {% endif %}
+        </div>
+
+        <!-- Completed Issues Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold mb-4">Completed Issues</h2>
+            {% if completed_issues %}
+                <div class="grid gap-4">
+                    {% for issue in completed_issues %}
+                        <div class="card">
+                            <h3 class="card-title">{{ issue.title }}</h3>
+                            <p>{{ issue.description|truncatewords:30 }}</p>
+                            <p>Location: {{ issue.location }}</p>
+                            <p>Completed on: {{ issue.updated_at|date }}</p>
+                            <span class="bg-green-100 text-green-700 text-xs py-1 px-3 rounded-full">
+                                Completed
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No completed issues yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    /* Global Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4; /* Light background for contrast */
+        color: #343a40; /* Dark text color for readability */
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Card Component */
+    .card {
+        background-color: #ffffff; /* White background for cards */
+        border-radius: 0.5rem; /* Slightly rounded corners */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        padding: 1.5rem; /* Spacing inside card */
+        margin: 1rem 0; /* Spacing between cards */
+        transition: transform 0.2s; /* Add transition for hover effect */
+    }
+
+    .card:hover {
+        transform: translateY(-5px); /* Lift effect on hover */
+    }
+
+    /* Card Title */
+    .card-title {
+        font-size: 1.5rem; /* Larger font size for title */
+        margin-bottom: 1rem; /* Space below title */
+    }
+
+    /* Button Styles */
+    .btn {
+        background-color: #007bff; /* Primary button color */
+        color: #ffffff; /* White text for button */
+        border: none; /* Remove default borders */
+        border-radius: 0.3rem; /* Round button corners */
+        padding: 0.5rem 1rem; /* Padding around button text */
+        cursor: pointer; /* Pointer cursor for buttons */
+        margin-right: 1rem; /* Space between buttons */
+        transition: background-color 0.3s; /* Transition for hover effect */
+    }
+
+    /* Button Hover Effect */
+    .btn:hover {
+        background-color: #0056b3; /* Darker shade on hover */
+    }
+
+    /* Grid Layout for Issues */
+    .grid {
+        display: grid; /* Use CSS Grid for layout */
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive columns */
+        gap: 1rem; /* Space between grid items */
+    }
+
+    /* Responsive Typography */
+    h2, h3 {
+        margin: 0.5rem 0; /* Space above and below headings */
+    }
+
+    /* Responsive Design: Media Queries */
+    @media (max-width: 600px) {
+        .btn {
+            padding: 0.4rem 0.8rem; /* Adjust button padding for smaller screens */
+        }
+        .card {
+            padding: 1rem; /* Less padding for cards on small screens */
+        }
+        .card-title {
+            font-size: 1.2rem; /* Adjust title size for smaller screens */
+        }
+    }
+</style>
+{% endblock %}

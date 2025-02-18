@@ -1,0 +1,291 @@
+<!-- templates/issue_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}{{ issue.title }}{% endblock %}
+
+{% block content %}
+<head>
+    <style>
+        /* Global styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 10px;
+        }
+
+        .post-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin: 20px auto;
+            overflow: hidden;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .username {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .time {
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .issue-details p {
+            margin: 5px 0;
+        }
+
+        .upvote-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .upvote-btn {
+            background-color: transparent;
+            border: none;
+            font-size: 1rem;
+            color: #ff4500;
+            cursor: pointer;
+            padding: 5px 10px;
+            font-weight: bold;
+        }
+
+        .images-section {
+            margin-top: 20px;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .image-card img {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .comments-section {
+            margin-top: 30px;
+        }
+
+        .comment-card {
+            background-color: #f7f7f7;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .comment-card p {
+            margin-bottom: 5px;
+        }
+
+        .comment-card small {
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            background-color: #0095f6;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background-color: #006db3;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .post-container {
+                padding: 10px;
+                max-width: 100%;
+            }
+
+            .profile-img {
+                width: 35px;
+                height: 35px;
+            }
+
+            .username {
+                font-size: 1rem;
+            }
+
+            .time {
+                font-size: 0.8rem;
+            }
+
+            .card-title {
+                font-size: 1.25rem;
+            }
+
+            .image-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            .upvote-btn {
+                font-size: 0.9rem;
+            }
+
+            .comment-card {
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .post-container {
+                padding: 5px;
+            }
+
+            .profile-img {
+                width: 30px;
+                height: 30px;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+
+            .upvote-btn {
+                font-size: 0.8rem;
+            }
+
+            .image-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<div class="post-container">
+    <div class="post-header">
+        <img class="profile-img" src="{{ user.profile_picture.url }}"alt="User">
+        <div class="user-info">
+            <span class="username">{{ issue.reported_by.username }}</span>
+            <span class="time">{{ issue.created_at|timesince }} ago</span>
+        </div>
+    </div>
+    
+    <h2 class="card-title">{{ issue.title }}</h2>
+    <div class="issue-details">
+        <p>{{ issue.description }}</p>
+        <p><strong>Location:</strong> {{ issue.location }}</p>
+        <p><strong>Status:</strong> {{ issue.get_status_display }}</p>
+        
+        <div class="upvote-container">
+            <p><strong>Upvotes:</strong> <span id="upvotes-count">{{ issue.upvotes_count }}</span></p>
+            {% if user.is_authenticated %}
+                <button class="upvote-btn" onclick="upvoteIssue({{ issue.id }})">
+                    {% if user in issue.upvotes.all %}
+                        Remove Upvote
+                    {% else %}
+                        Upvote
+                    {% endif %}
+                </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="images-section">
+        <h3>Images</h3>
+        <div class="image-grid">
+            {% for image in images %}
+                <div class="image-card">
+                    <img src="{{ image.image.url }}" alt="{{ image.caption }}">
+                    <p>{{ image.caption }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="comments-section">
+        <h3>Comments</h3>
+        {% for comment in comments %}
+            <div class="comment-card">
+                <p>{{ comment.content }}</p>
+                <small>By {{ comment.user.username }} on {{ comment.created_at }}</small>
+            </div>
+        {% endfor %}
+
+        {% if user.is_authenticated %}
+            <form method="post">
+                {% csrf_token %}
+                {{ comment_form }}
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function upvoteIssue(issueId) {
+    fetch(`/issues/upvote/${issueId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Update the upvotes count displayed on the page
+        document.getElementById('upvotes-count').textContent = data.upvotes_count;
+        
+        // Update the button text based on the action (added or removed)
+        const btn = document.querySelector('.upvote-btn');
+        if (data.action === 'added') {
+            btn.textContent = 'Remove Upvote';
+        } else {
+            btn.textContent = 'Upvote';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+</script>
+
+
+{% endblock %}

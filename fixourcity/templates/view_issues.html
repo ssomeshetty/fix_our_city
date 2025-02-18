@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}View Issues{% endblock %}
+<style>
+    /* Global Styles */
+    body {
+        font-family: 'Arial', sans-serif; /* Use a clean, legible font */
+        background-color:rgb(145, 22, 122); /* Light background for contrast */
+        color: #343a40; /* Dark text color for readability */
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Card Component */
+    .card {
+        background-color: #ffffff; /* White background for cards */
+        border-radius: 0.5rem; /* Slightly rounded corners */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        padding: 1.5rem; /* Spacing inside card */
+        margin: 1rem 0; /* Spacing between cards */
+        transition: transform 0.2s; /* Add transition for hover effect */
+    }
+
+    .card:hover {
+        transform: translateY(-5px); /* Lift effect on hover */
+    }
+
+    /* Card Title */
+    .card-title {
+        font-size: 1.5rem; /* Larger font size for title */
+        margin-bottom: 1rem; /* Space below title */
+    }
+
+    /* Tab Button Styles */
+    .tabs {
+        display: flex; /* Align buttons in a row */
+    }
+
+    .btn {
+        background-color: #007bff; /* Primary button color */
+        color: #ffffff; /* White text for button */
+        border: none; /* Remove default borders */
+        border-radius: 0.3rem; /* Round button corners */
+        padding: 0.5rem 1rem; /* Padding around button text */
+        cursor: pointer; /* Pointer cursor for buttons */
+        margin-right: 1rem; /* Space between buttons */
+        transition: background-color 0.3s; /* Transition for hover effect */
+    }
+
+    /* Button Hover Effect */
+    .btn:hover {
+        background-color: #0056b3; /* Darker shade on hover */
+    }
+
+    /* Tab Content */
+    .tab-content {
+        display: none; /* Hide all tab content by default */
+    }
+
+    .tab-content #new-issues {
+        display: block; /* Show default tab */
+    }
+
+    /* Grid Layout for Issues */
+    .grid {
+        display: grid; /* Use CSS Grid for layout */
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive columns */
+        gap: 1rem; /* Space between grid items */
+    }
+
+    /* Responsive Typography */
+    h2, h3 {
+        margin: 0.5rem 0; /* Space above and below headings */
+    }
+
+    /* Responsive Design: Media Queries */
+    @media (max-width: 600px) {
+        .btn {
+            padding: 0.4rem 0.8rem; /* Adjust button padding for smaller screens */
+        }
+        .card {
+            padding: 1rem; /* Less padding for cards on small screens */
+        }
+        .card-title {
+            font-size: 1.2rem; /* Adjust title size for smaller screens */
+        }
+
+    }
+    a {
+        text-decoration: none; /* Removes the underline from the link */
+    }
+</style>
+{% block content %}
+<div class="card">
+    <h2 class="card-title">Issues Overview</h2>
+    
+    <div class="tabs" style="margin-bottom: 1.5rem;">
+        <button class="btn" onclick="showTab('new')">New Issues</button>
+        <button class="btn" onclick="showTab('pending')">Pending Issues</button>
+        <button class="btn" onclick="showTab('completed')">Completed Issues</button>
+    </div>
+
+    <!-- New Issues Tab -->
+    <div id="new-issues" class="tab-content">
+        <div class="grid">
+            {% for issue in new_issues %}
+                <div class="card">
+                    <h3>{{ issue.title }}</h3>
+                    <p>{{ issue.description|truncatewords:30 }}</p>
+                    <p>Location: {{ issue.location }}</p>
+                    <p>Upvotes: {{ issue.upvotes_count }}</p>
+                    <a href="{% url 'issue_detail' issue.id %}" class="btn btn-primary">View Details</a>
+                </div>
+            {% empty %}
+                <p>No new issues.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Pending Issues Tab -->
+    <div id="pending-issues" class="tab-content" style="display: none;">
+        <div class="grid">
+            {% for issue in pending_issues %}
+                <div class="card">
+                    <h3>{{ issue.title }}</h3>
+                    <p>{{ issue.description|truncatewords:30 }}</p>
+                    <p>Location: {{ issue.location }}</p>
+                    <p>Upvotes: {{ issue.upvotes_count }}</p>
+                    <a href="{% url 'issue_detail' issue.id %}" class="btn btn-primary">View Details</a>
+                </div>
+            {% empty %}
+                <p>No pending issues.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Completed Issues Tab -->
+    <div id="completed-issues" class="tab-content" style="display: none;">
+        <div class="grid">
+            {% for issue in completed_issues %}
+                <div class="card">
+                    <h3>{{ issue.title }}</h3>
+                    <p>{{ issue.description|truncatewords:30 }}</p>
+                    <p>Location: {{ issue.location }}</p>
+                    <p>Upvotes: {{ issue.upvotes_count }}</p>
+                    <a href="{% url 'issue_detail' issue.id %}" class="btn btn-primary">View Details</a>
+                </div>
+            {% empty %}
+                <p>No completed issues.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+function showTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.style.display = 'none';
+    });
+    // Show the selected tab
+    document.getElementById(tabName + '-issues').style.display = 'block';
+}
+</script>
+
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}

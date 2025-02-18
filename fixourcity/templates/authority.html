@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}Authority Dashboard - City Issue Tracker{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Authority Details and Overview Cards -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h1 class="text-2xl font-bold mb-4">Authority Dashboard</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Statistics Card -->
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h2 class="text-xl font-semibold mb-2">Overview</h2>
+                    <p class="mb-2">Trending Issues: {{ trending_issues.count }}</p>
+                    <p>Pending Issues: {{ pending_issues.count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trending Issues Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Trending Issues</h2>
+            {% if trending_issues %}
+                <div class="grid gap-4">
+                    {% for issue in trending_issues %}
+                        <div class="card">
+                            <h3 class="card-title">{{ issue.title }}</h3>
+                            <p>{{ issue.description|truncatewords:30 }}</p>
+                            <p>Location: {{ issue.location }}</p>
+                            <p>Upvotes: {{ issue.upvotes_count }}</p>
+                            <a href="{% url 'assign_contractor' issue.id %}" class="btn btn-primary">Assign Contractor</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No trending issues at the moment.</p>
+            {% endif %}
+        </div>
+
+        <!-- Pending Issues Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold mb-4">Pending Issues</h2>
+            {% if pending_issues %}
+                <div class="grid gap-4">
+                    {% for issue in pending_issues %}
+                        <div class="card">
+                            <h3 class="card-title">{{ issue.title }}</h3>
+                            <p>{{ issue.description|truncatewords:30 }}</p>
+                            <p>Assigned to: {{ issue.contractor.name }}</p>
+                            <p>Status: Pending</p>
+                            <a href="{% url 'assign_contractor' issue.id %}" class="btn btn-primary">Assign Contractor</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No pending issues at the moment.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    /* Global Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: rgb(145, 22, 122); /* Light background for contrast */
+        color: #343a40; /* Dark text color for readability */
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Card Component */
+    .card {
+        background-color: #ffffff; /* White background for cards */
+        border-radius: 0.5rem; /* Slightly rounded corners */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        padding: 1.5rem; /* Spacing inside card */
+        margin: 1rem 0; /* Spacing between cards */
+        transition: transform 0.2s; /* Add transition for hover effect */
+    }
+
+    .card:hover {
+        transform: translateY(-5px); /* Lift effect on hover */
+    }
+
+    /* Card Title */
+    .card-title {
+        font-size: 1.5rem; /* Larger font size for title */
+        margin-bottom: 1rem; /* Space below title */
+    }
+
+    /* Button Styles */
+    .btn {
+        background-color: #007bff; /* Primary button color */
+        color: #ffffff; /* White text for button */
+        border: none; /* Remove default borders */
+        border-radius: 0.3rem; /* Round button corners */
+        padding: 0.5rem 1rem; /* Padding around button text */
+        cursor: pointer; /* Pointer cursor for buttons */
+        margin-right: 1rem; /* Space between buttons */
+        transition: background-color 0.3s; /* Transition for hover effect */
+    }
+
+    /* Button Hover Effect */
+    .btn:hover {
+        background-color: #0056b3; /* Darker shade on hover */
+    }
+
+    /* Grid Layout for Issues */
+    .grid {
+        display: grid; /* Use CSS Grid for layout */
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive columns */
+        gap: 1rem; /* Space between grid items */
+    }
+
+    /* Responsive Typography */
+    h2, h3 {
+        margin: 0.5rem 0; /* Space above and below headings */
+    }
+
+    /* Responsive Design: Media Queries */
+    @media (max-width: 600px) {
+        .btn {
+            padding: 0.4rem 0.8rem; /* Adjust button padding for smaller screens */
+        }
+        .card {
+            padding: 1rem; /* Less padding for cards on small screens */
+        }
+        .card-title {
+            font-size: 1.2rem; /* Adjust title size for smaller screens */
+        }
+    }
+</style>
+{% endblock %}

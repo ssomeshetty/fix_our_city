@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Profile - City Issue Tracker{% endblock %}
+
+{% block content %}
+<style>
+    /* Global Styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4; /* Light background for contrast */
+        margin: 0;
+        padding: 20px;
+    }
+
+    /* Container for the form */
+    .container {
+        max-width: 700px; /* Ensure container has a max width */
+        margin: auto; /* Center align */
+    }
+
+    /* Title Styles */
+    h2 {
+        color: #333; /* Dark color for title */
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Form Background and Padding */
+    form {
+        background-color: #ffffff; /* White background for the form */
+        border-radius: 8px;
+        padding: 20px; /* Inner spacing for form */
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    }
+
+    /* Form Group Styles */
+    .form-group {
+        margin-bottom: 15px; /* Space between form fields */
+    }
+
+    /* Label Styles */
+    label {
+        display: block; /* Block display for labels */
+        font-weight: bold; /* Bold for emphasis */
+        color: #555; /* Medium dark color for labels */
+        margin-bottom: 5px; /* Spacing above the label */
+    }
+
+    /* Input Field Styles */
+    input[type="text"],
+    input[type="email"],
+    input[type="file"] {
+        width: 100%; /* Full width */
+        padding: 10px; /* Padding for inputs */
+        border: 1px solid #ccc; /* Light border */
+        border-radius: 4px; /* Rounded corners */
+        box-sizing: border-box; /* Box model fix */
+    }
+
+    /* Error Message Style */
+    .alert {
+        margin-bottom: 20px; /* Space above alert */
+    }
+
+    /* Button Styles */
+    .btn {
+        display: inline-block; /* Button layout */
+        background-color: #007bff; /* Primary button color */
+        color: white; /* Text color for button */
+        padding: 10px; /* Padding for button */
+        border: none;
+        border-radius: 4px; /* Rounding for buttons */
+        cursor: pointer; /* Pointer on hover */
+        width: 100%; /* Full width */
+        font-size: 16px; /* Font size for button */
+    }
+
+    /* Button Hover Effect */
+    .btn:hover {
+        background-color: #0056b3; /* Darken on hover */
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 600px) {
+        form {
+            padding: 15px; /* Adjust padding for smaller screens */
+        }
+        h2 {
+            font-size: 20px; /* Decrease title size */
+        }
+    }
+</style>
+
+<div class="container mt-5">
+    <h2>Update Profile</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Display form non-field errors -->
+        <div class="alert alert-danger" role="alert">
+            {{ form.non_field_errors }}
+        </div>
+
+        <!-- Form fields -->
+        <div class="form-group">
+            <label for="id_username" class="font-weight-bold">Username</label>
+            <input type="text" name="username" class="form-control" value="{{ form.username.value }}" id="id_username">
+        </div>
+
+        <div class="form-group">
+            <label for="id_first_name" class="font-weight-bold">First Name</label>
+            <input type="text" name="first_name" class="form-control" value="{{ form.first_name.value }}" id="id_first_name">
+        </div>
+
+        <div class="form-group">
+            <label for="id_last_name" class="font-weight-bold">Last Name</label>
+            <input type="text" name="last_name" class="form-control" value="{{ form.last_name.value }}" id="id_last_name">
+        </div>
+
+        <div class="form-group">
+            <label for="id_email" class="font-weight-bold">Email</label>
+            <input type="email" name="email" class="form-control" value="{{ form.email.value }}" id="id_email">
+        </div>
+
+        <div class="form-group">
+            <label for="id_contact_info" class="font-weight-bold">Contact Info</label>
+            <input type="text" name="contact_info" class="form-control" value="{{ form.contact_info.value }}" id="id_contact_info">
+        </div>
+
+        <div class="form-group">
+            <label for="id_location" class="font-weight-bold">Location</label>
+            <input type="text" name="location" class="form-control" value="{{ form.location.value }}" id="id_location">
+        </div>
+
+        <div class="form-group">
+            <label for="id_profile_picture" class="font-weight-bold">Profile Picture</label>
+            {% if form.instance.profile_picture %}
+                <div>
+                    <img src="{{ form.instance.profile_picture.url }}" class="img-fluid mb-3" style="max-width: 200px;">
+                </div>
+            {% endif %}
+            <input type="file" name="profile_picture" class="form-control" id="id_profile_picture">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Update Profile</button>
+    </form>
+</div>
+{% endblock %}

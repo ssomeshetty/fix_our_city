@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Report Issue{% endblock %}
+
+{% block content %}
+<style>
+    /* Global Styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4; /* Light background for contrast */
+        margin: 0;
+        padding: 20px;
+    }
+
+    /* Card Container */
+    .card {
+        background-color: #ffffff; /* White background for the card */
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+        padding: 20px;
+        max-width: 600px; /* Max width for large screens */
+        margin: auto; /* Center align the card */
+    }
+
+    /* Card Title */
+    .card-title {
+        font-size: 24px;
+        color: #333; /* Dark text for title */
+        margin-bottom: 20px;
+    }
+
+    /* Form Group Styles */
+    .form-group {
+        margin-bottom: 15px; /* Space between form fields */
+    }
+
+    /* Label Styles */
+    .form-label {
+        display: block; /* Block display for labels */
+        font-weight: bold;
+        color: #555; /* Medium dark color for labels */
+        margin-bottom: 5px;
+    }
+
+    /* Input Field Styles */
+    input[type="text"],
+    input[type="email"],
+    input[type="file"],
+    textarea {
+        width: 100%; /* Full width for inputs */
+        padding: 10px; /* Padding for better touch targets */
+        border: 1px solid #ccc; /* Light border */
+        border-radius: 4px; /* Slight rounding */
+        box-sizing: border-box; /* Box model fix */
+    }
+
+    /* Error Message Style */
+    .message.message-error {
+        color: #ff4d4d; /* Red color for errors */
+        margin-top: 5px; /* Space above error message */
+    }
+
+    /* Button Styles */
+    .btn {
+        display: inline-block; /* Inline for button layout */
+        background-color: #007bff; /* Primary button color */
+        color: white; /* Text color */
+        padding: 10px 20px; /* Button padding */
+        border: none;
+        border-radius: 4px; /* Rounding for buttons */
+        cursor: pointer; /* Pointer cursor on hover */
+    }
+
+    /* Button Hover Effect */
+    .btn:hover {
+        background-color: #0056b3; /* Darken on hover */
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 600px) {
+        .card {
+            padding: 15px; /* Adjust padding for smaller screens */
+        }
+        .card-title {
+            font-size: 20px; /* Decrease title size */
+        }
+        .btn {
+            width: 100%; /* Full-width buttons on smaller screens */
+        }
+    }
+</style>
+
+<div class="card">
+    <h2 class="card-title">Report New Issue</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label class="form-label">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div class="message message-error">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <!-- Image field -->
+        <div class="form-group">
+            <label for="image">Upload Image</label>
+            <input type="file" name="image" accept="image/*">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Issue</button>
+    </form>
+</div>
+{% endblock %}
