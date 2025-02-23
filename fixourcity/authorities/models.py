@@ -1,6 +1,6 @@
 # authorities/models.py
 from django.db import models
-from users.models import User
+from public.models import User
 
 class Authority(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='authority_profile')
