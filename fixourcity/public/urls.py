@@ -1,21 +1,10 @@
-
-
+# users/urls.py
 from django.urls import path
 from . import views
-from public import views as user_views
-from django.contrib.auth import views as auth_views
-
 
 urlpatterns = [
-    path('', views.index, name= 'base'),
+    path('register/', views.register_view, name='register'),
     path('login/', views.login_view, name='login'),
-    path('register/', views.register, name='register'),
-    path('adminpage/', views.admin, name='adminpage'),
-    path('users/', views.users, name='users'),
-    path('contractor/', views.contractor, name='contractor'),
-    path('authority/', views.authority, name='authority'),
-    # path('register/', user_views.register, name="register"),
-    # path('profile/', user_views.profile, name="profile"),
-    # path('profile/profile_update/', user_views.profile_update, name="profile-update"),
-
-]
+    path('logout/', views.logout_view, name='logout'),
+    path('profile/', views.profile_display_view, name='profile'),
+    path('profile/update/', views.profile_update_view, name='profile_update'),]

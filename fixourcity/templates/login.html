@@ -1,25 +1,73 @@
 <!-- templates/login.html -->
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .login-container {
+            max-width: 450px;
+            margin: 100px auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .login-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1.1rem;
+        }
+        .register-link {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .register-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
 
-{% block title %}Login{% endblock %}
-
-{% block content %}
-<div class="card" style="max-width: 500px; margin: 2rem auto;">
-    <h2 class="card-title">Login</h2>
+<div class="login-container">
+    <h2 class="login-title">Login</h2>
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
-            <label class="form-label">Username</label>
-            <input type="text" name="username" class="form-control" required>
+            <label for="username" class="form-label">Username</label>
+            <input type="text" id="username" name="username" class="form-control" required>
         </div>
         <div class="form-group">
-            <label class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" required>
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" name="password" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
     </form>
-    <p style="margin-top: 1rem;">
+    <div class="register-link">
         Don't have an account? <a href="{% url 'register' %}">Register here</a>
-    </p>
+    </div>
 </div>
-{% endblock %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

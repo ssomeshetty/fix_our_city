@@ -1,137 +1,328 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authority Dashboard - FixOurCity</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4a148c;
+            --primary-light: #7c43bd;
+            --primary-dark: #12005e;
+            --secondary: #ff4081;
+            --secondary-light: #ff79b0;
+            --secondary-dark: #c60055;
+        }
 
-{% block title %}Authority Dashboard - City Issue Tracker{% endblock %}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            min-height: 100vh;
+        }
 
-{% block content %}
-<div class="min-h-screen bg-gray-100">
-    <div class="container mx-auto px-4 py-8">
-        <!-- Authority Details and Overview Cards -->
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <h1 class="text-2xl font-bold mb-4">Authority Dashboard</h1>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Statistics Card -->
-                <div class="bg-green-50 p-4 rounded-lg">
-                    <h2 class="text-xl font-semibold mb-2">Overview</h2>
-                    <p class="mb-2">Trending Issues: {{ trending_issues.count }}</p>
-                    <p>Pending Issues: {{ pending_issues.count }}</p>
-                </div>
+        .navbar {
+            background: var(--primary);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .main-container {
+            padding: 2rem;
+            margin-top: 76px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .issues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .issue-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .issue-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .issue-title {
+            color: var(--primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .issue-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .location-badge {
+            background: var(--primary-light);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+        }
+
+        .assign-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .assign-btn:hover {
+            background: var(--secondary-dark);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .issues-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-card {
+                padding: 1.5rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-city me-2"></i>FixOurCity
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'authority_dashboard' %}">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' %}">
+                            <i class="fas fa-user me-1"></i>Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container container">
+        <h1 class="mb-4">Authority Dashboard</h1>
+
+        <!-- Statistics Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-fire stat-icon"></i>
+                <div class="stat-value">{{ trending_issues.count }}</div>
+                <div class="stat-label">Trending Issues</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock stat-icon"></i>
+                <div class="stat-value">{{ pending_issues.count }}</div>
+                <div class="stat-label">Pending Issues</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-circle stat-icon"></i>
+                <div class="stat-value">{{ completed_issues.count }}</div>
+                <div class="stat-label">Completed Issues</div>
             </div>
         </div>
 
         <!-- Trending Issues Section -->
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <h2 class="text-xl font-bold mb-4">Trending Issues</h2>
+        <div class="section-card">
+            <h2 class="section-title">
+                <i class="fas fa-fire me-2"></i>
+                Trending Issues
+            </h2>
             {% if trending_issues %}
-                <div class="grid gap-4">
+                <div class="issues-grid">
                     {% for issue in trending_issues %}
-                        <div class="card">
-                            <h3 class="card-title">{{ issue.title }}</h3>
+                        <div class="issue-card">
+                            <h3 class="issue-title">{{ issue.title }}</h3>
                             <p>{{ issue.description|truncatewords:30 }}</p>
-                            <p>Location: {{ issue.location }}</p>
-                            <p>Upvotes: {{ issue.upvotes_count }}</p>
-                            <a href="{% url 'assign_contractor' issue.id %}" class="btn btn-primary">Assign Contractor</a>
+                            <div class="issue-meta">
+                                <span class="location-badge">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    {{ issue.location }}
+                                </span>
+                                <span>
+                                    <i class="fas fa-arrow-up me-1"></i>
+                                    {{ issue.upvotes_count }} upvotes
+                                </span>
+                            </div>
+                            <a href="{% url 'assign_contractor' issue.id %}" class="assign-btn">
+                                <i class="fas fa-user-plus me-1"></i>
+                                Assign Contractor
+                            </a>
                         </div>
                     {% endfor %}
                 </div>
             {% else %}
-                <p>No trending issues at the moment.</p>
+                <div class="empty-state">
+                    <i class="fas fa-check-circle fa-3x mb-3"></i>
+                    <p>No trending issues at the moment.</p>
+                </div>
             {% endif %}
         </div>
 
         <!-- Pending Issues Section -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold mb-4">Pending Issues</h2>
+        <div class="section-card">
+            <h2 class="section-title">
+                <i class="fas fa-clock me-2"></i>
+                Pending Issues
+            </h2>
             {% if pending_issues %}
-                <div class="grid gap-4">
+                <div class="issues-grid">
                     {% for issue in pending_issues %}
-                        <div class="card">
-                            <h3 class="card-title">{{ issue.title }}</h3>
+                        <div class="issue-card">
+                            <h3 class="issue-title">{{ issue.title }}</h3>
                             <p>{{ issue.description|truncatewords:30 }}</p>
-                            <p>Assigned to: {{ issue.contractor.name }}</p>
-                            <p>Status: Pending</p>
-                            <a href="{% url 'assign_contractor' issue.id %}" class="btn btn-primary">Assign Contractor</a>
+                            <div class="issue-meta">
+                                <span class="location-badge">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    {{ issue.location }}
+                                </span>
+                                <span>
+                                    <i class="fas fa-user me-1"></i>
+                                    {{ issue.contractor.name }}
+                                </span>
+                            </div>
+                            <a href="{% url 'assign_contractor' issue.id %}" class="assign-btn">
+                                <i class="fas fa-exchange-alt me-1"></i>
+                                Reassign Contractor
+                            </a>
                         </div>
                     {% endfor %}
                 </div>
             {% else %}
-                <p>No pending issues at the moment.</p>
+                <div class="empty-state">
+                    <i class="fas fa-check-circle fa-3x mb-3"></i>
+                    <p>No pending issues at the moment.</p>
+                </div>
             {% endif %}
         </div>
     </div>
-</div>
-{% endblock %}
 
-{% block styles %}
-<style>
-    /* Global Styles */
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: rgb(145, 22, 122); /* Light background for contrast */
-        color: #343a40; /* Dark text color for readability */
-        margin: 0;
-        padding: 0;
-    }
-
-    /* Card Component */
-    .card {
-        background-color: #ffffff; /* White background for cards */
-        border-radius: 0.5rem; /* Slightly rounded corners */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-        padding: 1.5rem; /* Spacing inside card */
-        margin: 1rem 0; /* Spacing between cards */
-        transition: transform 0.2s; /* Add transition for hover effect */
-    }
-
-    .card:hover {
-        transform: translateY(-5px); /* Lift effect on hover */
-    }
-
-    /* Card Title */
-    .card-title {
-        font-size: 1.5rem; /* Larger font size for title */
-        margin-bottom: 1rem; /* Space below title */
-    }
-
-    /* Button Styles */
-    .btn {
-        background-color: #007bff; /* Primary button color */
-        color: #ffffff; /* White text for button */
-        border: none; /* Remove default borders */
-        border-radius: 0.3rem; /* Round button corners */
-        padding: 0.5rem 1rem; /* Padding around button text */
-        cursor: pointer; /* Pointer cursor for buttons */
-        margin-right: 1rem; /* Space between buttons */
-        transition: background-color 0.3s; /* Transition for hover effect */
-    }
-
-    /* Button Hover Effect */
-    .btn:hover {
-        background-color: #0056b3; /* Darker shade on hover */
-    }
-
-    /* Grid Layout for Issues */
-    .grid {
-        display: grid; /* Use CSS Grid for layout */
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive columns */
-        gap: 1rem; /* Space between grid items */
-    }
-
-    /* Responsive Typography */
-    h2, h3 {
-        margin: 0.5rem 0; /* Space above and below headings */
-    }
-
-    /* Responsive Design: Media Queries */
-    @media (max-width: 600px) {
-        .btn {
-            padding: 0.4rem 0.8rem; /* Adjust button padding for smaller screens */
-        }
-        .card {
-            padding: 1rem; /* Less padding for cards on small screens */
-        }
-        .card-title {
-            font-size: 1.2rem; /* Adjust title size for smaller screens */
-        }
-    }
-</style>
-{% endblock %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

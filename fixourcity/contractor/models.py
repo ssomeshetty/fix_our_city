@@ -1,7 +1,7 @@
 # contractor/models.py
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from users.models import User
+from public.models import User
 from authorities.models import Authority
 
 class Contractor(models.Model):

@@ -1,150 +1,238 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}Update Profile - City Issue Tracker{% endblock %}
-
-{% block content %}
-<style>
-    /* Global Styles */
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4; /* Light background for contrast */
-        margin: 0;
-        padding: 20px;
-    }
-
-    /* Container for the form */
-    .container {
-        max-width: 700px; /* Ensure container has a max width */
-        margin: auto; /* Center align */
-    }
-
-    /* Title Styles */
-    h2 {
-        color: #333; /* Dark color for title */
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    /* Form Background and Padding */
-    form {
-        background-color: #ffffff; /* White background for the form */
-        border-radius: 8px;
-        padding: 20px; /* Inner spacing for form */
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    }
-
-    /* Form Group Styles */
-    .form-group {
-        margin-bottom: 15px; /* Space between form fields */
-    }
-
-    /* Label Styles */
-    label {
-        display: block; /* Block display for labels */
-        font-weight: bold; /* Bold for emphasis */
-        color: #555; /* Medium dark color for labels */
-        margin-bottom: 5px; /* Spacing above the label */
-    }
-
-    /* Input Field Styles */
-    input[type="text"],
-    input[type="email"],
-    input[type="file"] {
-        width: 100%; /* Full width */
-        padding: 10px; /* Padding for inputs */
-        border: 1px solid #ccc; /* Light border */
-        border-radius: 4px; /* Rounded corners */
-        box-sizing: border-box; /* Box model fix */
-    }
-
-    /* Error Message Style */
-    .alert {
-        margin-bottom: 20px; /* Space above alert */
-    }
-
-    /* Button Styles */
-    .btn {
-        display: inline-block; /* Button layout */
-        background-color: #007bff; /* Primary button color */
-        color: white; /* Text color for button */
-        padding: 10px; /* Padding for button */
-        border: none;
-        border-radius: 4px; /* Rounding for buttons */
-        cursor: pointer; /* Pointer on hover */
-        width: 100%; /* Full width */
-        font-size: 16px; /* Font size for button */
-    }
-
-    /* Button Hover Effect */
-    .btn:hover {
-        background-color: #0056b3; /* Darken on hover */
-    }
-
-    /* Responsive Styles */
-    @media (max-width: 600px) {
-        form {
-            padding: 15px; /* Adjust padding for smaller screens */
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile - City Issue Tracker</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        /* Global Styles */
+        :root {
+            --primary: #4a148c;
+            --primary-light: #7c43bd;
+            --primary-dark: #12005e;
+            --secondary: #ff4081;
+            --secondary-light: #ff79b0;
+            --secondary-dark: #c60055;
         }
+
+        body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;  /* Horizontally center */
+        align-items: center;      /* Vertically center */
+        margin: 0;                /* Remove default body margin */
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;  /* Ensure the container takes up full width up to the max-width */
+            padding: 20px;
+        }
+
         h2 {
-            font-size: 20px; /* Decrease title size */
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
         }
-    }
-</style>
 
-<div class="container mt-5">
-    <h2>Update Profile</h2>
+        /* Navbar Styles */
+        .navbar {
+            background-color: #4a148c;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
 
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        
-        <!-- Display form non-field errors -->
-        <div class="alert alert-danger" role="alert">
-            {{ form.non_field_errors }}
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+            padding-left: 55px;
+        }
+
+        #navbarNav {
+            padding-right: 55px;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .navbar-toggler-icon {
+            color: white;
+        }
+
+        /* Form Styles */
+        form {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 600px) {
+            form {
+                padding: 15px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+        }
+        .navbar-toggler-icon {
+            display: inline-block; /* Ensure it is displayed */
+            background-color: #fff; /* Ensure it is visible (white or appropriate color) */
+            width: 30px; /* Customize as needed */
+            height: 3px; /* Customize as needed */
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-city me-2"></i>     FixOurCity
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        {% if user.role == 'public' %}
+                            <a href="{% url 'view_issues' %}" class="nav-link">View Issues</a>
+                        {% elif user.role == 'authority' %}
+                            <a href="{% url 'authority_dashboard' %}" class="nav-link">Dashboard</a>
+                        {% elif user.role == 'contractor' %}
+                            <a href="{% url 'contractor_dashboard' %}" class="nav-link">Dashboard</a>
+                        {% endif %}
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user me-1"></i>Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
+                    </li>
+                </ul>
+            </div>
         </div>
+    </nav>
 
-        <!-- Form fields -->
-        <div class="form-group">
-            <label for="id_username" class="font-weight-bold">Username</label>
-            <input type="text" name="username" class="form-control" value="{{ form.username.value }}" id="id_username">
-        </div>
+    <!-- Main Content -->
+    <div class="container mt-5 pt-5">
+        <h2>Update Profile</h2>
 
-        <div class="form-group">
-            <label for="id_first_name" class="font-weight-bold">First Name</label>
-            <input type="text" name="first_name" class="form-control" value="{{ form.first_name.value }}" id="id_first_name">
-        </div>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="alert alert-danger" role="alert">
+                {{ form.non_field_errors }}
+            </div>
 
-        <div class="form-group">
-            <label for="id_last_name" class="font-weight-bold">Last Name</label>
-            <input type="text" name="last_name" class="form-control" value="{{ form.last_name.value }}" id="id_last_name">
-        </div>
+            <div class="form-group">
+                <label for="id_username" class="font-weight-bold">Username</label>
+                <input type="text" name="username" class="form-control" value="{{ form.username.value }}" id="id_username">
+            </div>
 
-        <div class="form-group">
-            <label for="id_email" class="font-weight-bold">Email</label>
-            <input type="email" name="email" class="form-control" value="{{ form.email.value }}" id="id_email">
-        </div>
+            <div class="form-group">
+                <label for="id_first_name" class="font-weight-bold">First Name</label>
+                <input type="text" name="first_name" class="form-control" value="{{ form.first_name.value }}" id="id_first_name">
+            </div>
 
-        <div class="form-group">
-            <label for="id_contact_info" class="font-weight-bold">Contact Info</label>
-            <input type="text" name="contact_info" class="form-control" value="{{ form.contact_info.value }}" id="id_contact_info">
-        </div>
+            <div class="form-group">
+                <label for="id_last_name" class="font-weight-bold">Last Name</label>
+                <input type="text" name="last_name" class="form-control" value="{{ form.last_name.value }}" id="id_last_name">
+            </div>
 
-        <div class="form-group">
-            <label for="id_location" class="font-weight-bold">Location</label>
-            <input type="text" name="location" class="form-control" value="{{ form.location.value }}" id="id_location">
-        </div>
+            <div class="form-group">
+                <label for="id_email" class="font-weight-bold">Email</label>
+                <input type="email" name="email" class="form-control" value="{{ form.email.value }}" id="id_email">
+            </div>
 
-        <div class="form-group">
-            <label for="id_profile_picture" class="font-weight-bold">Profile Picture</label>
-            {% if form.instance.profile_picture %}
-                <div>
-                    <img src="{{ form.instance.profile_picture.url }}" class="img-fluid mb-3" style="max-width: 200px;">
-                </div>
-            {% endif %}
-            <input type="file" name="profile_picture" class="form-control" id="id_profile_picture">
-        </div>
+            <div class="form-group">
+                <label for="id_contact_info" class="font-weight-bold">Contact Info</label>
+                <input type="text" name="contact_info" class="form-control" value="{{ form.contact_info.value }}" id="id_contact_info">
+            </div>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary btn-lg btn-block">Update Profile</button>
-    </form>
-</div>
-{% endblock %}
+            <div class="form-group">
+                <label for="id_location" class="font-weight-bold">Location</label>
+                <input type="text" name="location" class="form-control" value="{{ form.location.value }}" id="id_location">
+            </div>
+
+            <div class="form-group">
+                <label for="id_profile_picture" class="font-weight-bold">Profile Picture</label>
+                {% if form.instance.profile_picture %}
+                    <div>
+                        <img src="{{ form.instance.profile_picture.url }}" class="img-fluid mb-3" style="max-width: 200px;">
+                    </div>
+                {% endif %}
+                <input type="file" name="profile_picture" class="form-control" id="id_profile_picture">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Update Profile</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <!-- Bootstrap 4.5.2 JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

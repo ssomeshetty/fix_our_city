@@ -1,74 +1,110 @@
 from django.shortcuts import render, redirect
-from .forms import SignUpForm, LoginForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login, authenticate, logout
+from django.contrib import messages
+from .forms import UserRegistrationForm, UserProfileForm  # Import the profile form
+from .models import User
+from authorities.models import Authority
+from contractor.models import Contractor
+from django.contrib.auth.decorators import login_required
 
-def index(request):
-    return render(request, 'base.html')
-
-def register(request):
-    msg = None
+def register_view(request):
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
+        form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            if form.cleaned_data.get('is_admin'):
-                user.is_admin = True
-            if form.cleaned_data.get('is_contractor'):
-                user.is_contractor = True
-            if form.cleaned_data.get('is_authority'):
-                user.is_authority = True
-            if form.cleaned_data.get('is_users'):
-                user.is_users = True
-            user.save()
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Registration successful!')
 
-            msg = 'User created successfully.'
-            return redirect('login')  # After registration, redirect to login page
-        else:
-            msg = 'Form is not valid'
+            # Check if the user is an authority, and create an Authority profile
+            if user.role == 'authority':
+                Authority.objects.create(
+                    user=user,
+                    name=user.username,  # You can customize this based on how you want to get the name
+                    description="Description for authority",
+                    jurisdiction="Jurisdiction for authority",
+                    contact_info=user.contact_info,
+                    address="Address for authority",
+                    is_active=True
+                )
+                messages.success(request, 'Authority profile created successfully!')
+
+            # Check if the user is a contractor, and create a Contractor profile
+            elif user.role == 'contractor':
+                authority = Authority.objects.first()  # You can adjust this to choose the appropriate authority
+                Contractor.objects.create(
+                    user=user,
+                    name=user.username,  # Use username or custom field for name
+                    expertise="General",  # Default value or adjust as necessary
+                    contact_info=user.contact_info,
+                    credit_score=1.00,  # Default value
+                    authority=authority,  # Assign an authority
+                    total_completed_issues=0,
+                    is_active=True
+                )
+                messages.success(request, 'Contractor profile created successfully!')
+
+            # Redirect based on role
+            if user.role == 'public':
+                return redirect('base')
+            elif user.role == 'authority':
+                return redirect('authority_dashboard')
+            elif user.role == 'contractor':
+                return redirect('contractor_dashboard')
+            elif user.role == 'admin':
+                return redirect('admin_dashboard')
     else:
-        form = SignUpForm()
-    
-    return render(request, 'register.html', {'form': form, 'msg': msg})
+        form = UserRegistrationForm()
+
+    return render(request, 'register.html', {'form': form})
 
 def login_view(request):
-    form = LoginForm(request.POST or None)
-    msg = None
     if request.method == 'POST':
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                print(f'User {username} logged in with roles: is_admin={user.is_admin}, is_contractor={user.is_contractor}, is_authority={user.is_authority}, is_users={user.is_users}')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'Login successful!')
 
-                # Redirect based on user roles
-                role_redirects = {
-                    'is_admin': 'adminpage',
-                    'is_contractor': 'contractor',
-                    'is_authority': 'authority',
-                    'is_users': 'users',
-                }
-
-                for role, redirect_url in role_redirects.items():
-                    if getattr(user, role):
-                        return redirect(redirect_url)
-
-                msg = 'User has no assigned role.'
-            else:
-                msg = 'Invalid credentials.'
+            # Redirect based on role
+            if user.role == 'public':
+                return redirect('view_issues')
+            elif user.role == 'authority':
+                return redirect('authority_dashboard')
+            elif user.role == 'contractor':
+                return redirect('contractor_dashboard')
+            elif user.role == 'admin':
+                return redirect('admin_dashboard')
         else:
-            msg = 'Error occurred during form validation.'
-    return render(request, 'login.html', {'form': form, 'msg': msg})
+            messages.error(request, 'Invalid username or password.')
+    return render(request, 'login.html')
 
-def admin(request):
-    return render(request, 'admin.html')
+@login_required
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'Logged out successfully!')
+    return redirect('base')
 
-def contractor(request):
-    return render(request, 'contractor.html')
 
-def authority(request):
-    return render(request, 'authority.html')
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .forms import UserProfileForm
+@login_required
+def profile_display_view(request):
+    """View to display the profile details."""
+    return render(request, 'profile.html', {'user': request.user})
 
-def users(request):
-    return render(request, 'users.html')
+@login_required
+def profile_update_view(request):
+    """View to handle profile update."""
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('profile')  # Redirect to the profile display page after update
+    else:
+        form = UserProfileForm(instance=request.user)
+
+    return render(request, 'profile_update.html', {'form': form})

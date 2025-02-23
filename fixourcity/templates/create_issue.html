@@ -1,118 +1,181 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Issue - FixOurCity</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Light background for contrast */
+            margin: 0;
+            padding: 20px;
+            padding-top: 80px; /* Added padding to prevent navbar overlap */
+        }
 
-{% block title %}Report Issue{% endblock %}
-
-{% block content %}
-<style>
-    /* Global Styles */
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4; /* Light background for contrast */
-        margin: 0;
-        padding: 20px;
-    }
-
-    /* Card Container */
-    .card {
-        background-color: #ffffff; /* White background for the card */
-        border-radius: 8px;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
-        padding: 20px;
-        max-width: 600px; /* Max width for large screens */
-        margin: auto; /* Center align the card */
-    }
-
-    /* Card Title */
-    .card-title {
-        font-size: 24px;
-        color: #333; /* Dark text for title */
-        margin-bottom: 20px;
-    }
-
-    /* Form Group Styles */
-    .form-group {
-        margin-bottom: 15px; /* Space between form fields */
-    }
-
-    /* Label Styles */
-    .form-label {
-        display: block; /* Block display for labels */
-        font-weight: bold;
-        color: #555; /* Medium dark color for labels */
-        margin-bottom: 5px;
-    }
-
-    /* Input Field Styles */
-    input[type="text"],
-    input[type="email"],
-    input[type="file"],
-    textarea {
-        width: 100%; /* Full width for inputs */
-        padding: 10px; /* Padding for better touch targets */
-        border: 1px solid #ccc; /* Light border */
-        border-radius: 4px; /* Slight rounding */
-        box-sizing: border-box; /* Box model fix */
-    }
-
-    /* Error Message Style */
-    .message.message-error {
-        color: #ff4d4d; /* Red color for errors */
-        margin-top: 5px; /* Space above error message */
-    }
-
-    /* Button Styles */
-    .btn {
-        display: inline-block; /* Inline for button layout */
-        background-color: #007bff; /* Primary button color */
-        color: white; /* Text color */
-        padding: 10px 20px; /* Button padding */
-        border: none;
-        border-radius: 4px; /* Rounding for buttons */
-        cursor: pointer; /* Pointer cursor on hover */
-    }
-
-    /* Button Hover Effect */
-    .btn:hover {
-        background-color: #0056b3; /* Darken on hover */
-    }
-
-    /* Responsive Styles */
-    @media (max-width: 600px) {
+        /* Card Container */
         .card {
-            padding: 15px; /* Adjust padding for smaller screens */
+            background-color: #ffffff; /* White background for the card */
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+            padding: 20px;
+            max-width: 600px; /* Max width for large screens */
+            margin: 20px auto; /* Center align the card */
         }
+
+        /* Card Title */
         .card-title {
-            font-size: 20px; /* Decrease title size */
+            font-size: 24px;
+            color: #333; /* Dark text for title */
+            margin-bottom: 20px;
         }
+
+        /* Form Group Styles */
+        .form-group {
+            margin-bottom: 15px; /* Space between form fields */
+        }
+
+        /* Label Styles */
+        .form-label {
+            display: block; /* Block display for labels */
+            font-weight: bold;
+            color: #555; /* Medium dark color for labels */
+            margin-bottom: 5px;
+        }
+
+        /* Input Field Styles */
+        input[type="text"],
+        input[type="email"],
+        input[type="file"],
+        textarea {
+            width: 100%; /* Full width for inputs */
+            padding: 10px; /* Padding for better touch targets */
+            border: 1px solid #ccc; /* Light border */
+            border-radius: 4px; /* Slight rounding */
+            box-sizing: border-box; /* Box model fix */
+        }
+
+        /* Error Message Style */
+        .message.message-error {
+            color: #ff4d4d; /* Red color for errors */
+            margin-top: 5px; /* Space above error message */
+        }
+
+        /* Button Styles */
         .btn {
-            width: 100%; /* Full-width buttons on smaller screens */
+            display: inline-block; /* Inline for button layout */
+            background-color: #007bff; /* Primary button color */
+            color: white; /* Text color */
+            padding: 10px 20px; /* Button padding */
+            border: none;
+            border-radius: 4px; /* Rounding for buttons */
+            cursor: pointer; /* Pointer cursor on hover */
         }
-    }
-</style>
 
-<div class="card">
-    <h2 class="card-title">Report New Issue</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% for field in form %}
-            <div class="form-group">
-                <label class="form-label">{{ field.label }}</label>
-                {{ field }}
-                {% if field.errors %}
-                    <div class="message message-error">
-                        {{ field.errors }}
-                    </div>
-                {% endif %}
+        /* Button Hover Effect */
+        .btn:hover {
+            background-color: #0056b3; /* Darken on hover */
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .card {
+                padding: 15px; /* Adjust padding for smaller screens */
+            }
+            .card-title {
+                font-size: 20px; /* Decrease title size */
+            }
+            .btn {
+                width: 100%; /* Full-width buttons on smaller screens */
+            }
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #4a148c;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .navbar-toggler-icon {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-city me-2"></i>FixOurCity
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'create_issue' %}"><i class="fas fa-plus-circle me-1"></i>Report Issue</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'view_issues' %}"><i class="fas fa-list me-1"></i>View Issues</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user me-1"></i>Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
+                    </li>
+                </ul>
             </div>
-        {% endfor %}
-        
-        <!-- Image field -->
-        <div class="form-group">
-            <label for="image">Upload Image</label>
-            <input type="file" name="image" accept="image/*">
         </div>
+    </nav>
 
-        <button type="submit" class="btn btn-primary">Submit Issue</button>
-    </form>
-</div>
-{% endblock %}
+    <!-- Main Content -->
+    <div class="card">
+        <h2 class="card-title">Report New Issue</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="message message-error">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <!-- Image field -->
+            <div class="form-group">
+                <label for="image">Upload Image</label>
+                <input type="file" name="image" accept="image/*">
+            </div>
+
+            <button type="submit" class="btn">Submit Issue</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

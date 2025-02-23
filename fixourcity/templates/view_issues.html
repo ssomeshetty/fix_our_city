@@ -1,170 +1,314 @@
-{% extends 'base.html' %}
-
-{% block title %}View Issues{% endblock %}
-<style>
-    /* Global Styles */
-    body {
-        font-family: 'Arial', sans-serif; /* Use a clean, legible font */
-        background-color:rgb(145, 22, 122); /* Light background for contrast */
-        color: #343a40; /* Dark text color for readability */
-        margin: 0;
-        padding: 0;
-    }
-
-    /* Card Component */
-    .card {
-        background-color: #ffffff; /* White background for cards */
-        border-radius: 0.5rem; /* Slightly rounded corners */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-        padding: 1.5rem; /* Spacing inside card */
-        margin: 1rem 0; /* Spacing between cards */
-        transition: transform 0.2s; /* Add transition for hover effect */
-    }
-
-    .card:hover {
-        transform: translateY(-5px); /* Lift effect on hover */
-    }
-
-    /* Card Title */
-    .card-title {
-        font-size: 1.5rem; /* Larger font size for title */
-        margin-bottom: 1rem; /* Space below title */
-    }
-
-    /* Tab Button Styles */
-    .tabs {
-        display: flex; /* Align buttons in a row */
-    }
-
-    .btn {
-        background-color: #007bff; /* Primary button color */
-        color: #ffffff; /* White text for button */
-        border: none; /* Remove default borders */
-        border-radius: 0.3rem; /* Round button corners */
-        padding: 0.5rem 1rem; /* Padding around button text */
-        cursor: pointer; /* Pointer cursor for buttons */
-        margin-right: 1rem; /* Space between buttons */
-        transition: background-color 0.3s; /* Transition for hover effect */
-    }
-
-    /* Button Hover Effect */
-    .btn:hover {
-        background-color: #0056b3; /* Darker shade on hover */
-    }
-
-    /* Tab Content */
-    .tab-content {
-        display: none; /* Hide all tab content by default */
-    }
-
-    .tab-content #new-issues {
-        display: block; /* Show default tab */
-    }
-
-    /* Grid Layout for Issues */
-    .grid {
-        display: grid; /* Use CSS Grid for layout */
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive columns */
-        gap: 1rem; /* Space between grid items */
-    }
-
-    /* Responsive Typography */
-    h2, h3 {
-        margin: 0.5rem 0; /* Space above and below headings */
-    }
-
-    /* Responsive Design: Media Queries */
-    @media (max-width: 600px) {
-        .btn {
-            padding: 0.4rem 0.8rem; /* Adjust button padding for smaller screens */
-        }
-        .card {
-            padding: 1rem; /* Less padding for cards on small screens */
-        }
-        .card-title {
-            font-size: 1.2rem; /* Adjust title size for smaller screens */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Issues - FixOurCity</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4a148c;
+            --primary-light: #7c43bd;
+            --primary-dark: #12005e;
+            --secondary: #ff4081;
+            --secondary-light: #ff79b0;
+            --secondary-dark: #c60055;
         }
 
-    }
-    a {
-        text-decoration: none; /* Removes the underline from the link */
-    }
-</style>
-{% block content %}
-<div class="card">
-    <h2 class="card-title">Issues Overview</h2>
-    
-    <div class="tabs" style="margin-bottom: 1.5rem;">
-        <button class="btn" onclick="showTab('new')">New Issues</button>
-        <button class="btn" onclick="showTab('pending')">Pending Issues</button>
-        <button class="btn" onclick="showTab('completed')">Completed Issues</button>
-    </div>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            min-height: 100vh;
+        }
 
-    <!-- New Issues Tab -->
-    <div id="new-issues" class="tab-content">
-        <div class="grid">
-            {% for issue in new_issues %}
-                <div class="card">
-                    <h3>{{ issue.title }}</h3>
-                    <p>{{ issue.description|truncatewords:30 }}</p>
-                    <p>Location: {{ issue.location }}</p>
-                    <p>Upvotes: {{ issue.upvotes_count }}</p>
-                    <a href="{% url 'issue_detail' issue.id %}" class="btn btn-primary">View Details</a>
+        /* Navbar Styles */
+        .navbar {
+            background: var(--primary);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-container {
+            padding: 2rem;
+            margin-top: 76px;
+        }
+
+        /* Tab Buttons */
+        .tab-button {
+            background-color: var(--primary-light);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            margin: 0 10px 20px 0;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab-button:hover {
+            background-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .tab-button.active {
+            background-color: var(--secondary);
+        }
+
+        /* Cards */
+        .issue-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .issue-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .issue-title {
+            color: var(--primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .issue-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .issue-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        .upvote-count {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+
+        .view-details-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .view-details-btn:hover {
+            background-color: var(--primary-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Grid Layout */
+        .issues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .tab-button {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+
+            .issues-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .issue-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-city me-2"></i>FixOurCity
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'create_issue' %}"><i class="fas fa-plus-circle me-1"></i>Report Issue</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'view_issues' %}"><i class="fas fa-list me-1"></i>View Issues</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user me-1"></i>Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container container">
+        <h1 class="mb-4">Issues Overview</h1>
+        
+        <!-- Tab Buttons -->
+        <div class="tabs mb-4">
+            <button class="tab-button active" onclick="showTab('new')">
+                <i class="fas fa-exclamation-circle me-2"></i>New Issues
+            </button>
+            <button class="tab-button" onclick="showTab('pending')">
+                <i class="fas fa-clock me-2"></i>Pending Issues
+            </button>
+            <button class="tab-button" onclick="showTab('completed')">
+                <i class="fas fa-check-circle me-2"></i>Completed Issues
+            </button>
+        </div>
+
+        <!-- Tab Contents -->
+        <div id="new-issues" class="tab-content">
+            <div class="issues-grid">
+                <!-- Sample New Issues -->
+                {% for issue in new_issues %}
+                <div class="issue-card">
+                    <h3 class="issue-title">{{ issue.title }}</h3>
+                    <p class="issue-description">{{ issue.description|truncatewords:30 }}</p>
+                    <div class="issue-meta">
+                        <span><i class="fas fa-map-marker-alt me-2"></i>Location: {{ issue.location }}</span>
+                        <span class="upvote-count"><i class="fas fa-arrow-up"></i>Upvotes: {{ issue.upvotes_count }}</span>
+                    </div>
+                    <a href="{% url 'issue_detail' issue.id %}" class="view-details-btn">View Details</a>
                 </div>
-            {% empty %}
-                <p>No new issues.</p>
-            {% endfor %}
+                <!-- More cards... -->
+                {% empty %}
+                    <p>No new issues.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div id="pending-issues" class="tab-content" style="display: none;">
+            <div class="issues-grid">
+                <!-- Sample Pending Issues -->
+                {% for issue in pending_issues %}
+
+                <div class="issue-card">
+                    <h3 class="issue-title">{{ issue.title }}</h3>
+                    <p class="issue-description">{{ issue.description|truncatewords:30 }}</p>
+                    <div class="issue-meta">
+                        <span><i class="fas fa-map-marker-alt me-2"></i>{{ issue.location }}</span>
+                        <span class="upvote-count"><i class="fas fa-arrow-up"></i>{{ issue.upvotes_count }}</span>
+                    </div>
+                    <a href="{% url 'issue_detail' issue.id %}" class="view-details-btn">View Details</a>
+                </div>
+                <!-- More cards... -->
+                 {% empty %}
+                    <p>No pending issues.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div id="completed-issues" class="tab-content" style="display: none;">
+            <div class="issues-grid">
+                <!-- Sample Completed Issues -->
+                {% for issue in completed_issues %}
+                <div class="issue-card">
+                    <h3 class="issue-title">{{ issue.title }}</h3>
+                    <p class="issue-description">{{ issue.description|truncatewords:30 }}</p>
+                    <div class="issue-meta">
+                        <span><i class="fas fa-map-marker-alt me-2"></i>{{ issue.location }}</span>
+                        <span class="upvote-count"><i class="fas fa-arrow-up">{{ issue.upvotes_count }}</i></span>
+                    </div>
+                    <a href="{% url 'issue_detail' issue.id %}" class="view-details-btn">View Details</a>
+                </div>
+                <!-- More cards... -->
+                {% empty %}
+                    <p>No completed issues.</p>
+                {% endfor %}
+            </div>
         </div>
     </div>
 
-    <!-- Pending Issues Tab -->
-    <div id="pending-issues" class="tab-content" style="display: none;">
-        <div class="grid">
-            {% for issue in pending_issues %}
-                <div class="card">
-                    <h3>{{ issue.title }}</h3>
-                    <p>{{ issue.description|truncatewords:30 }}</p>
-                    <p>Location: {{ issue.location }}</p>
-                    <p>Upvotes: {{ issue.upvotes_count }}</p>
-                    <a href="{% url 'issue_detail' issue.id %}" class="btn btn-primary">View Details</a>
-                </div>
-            {% empty %}
-                <p>No pending issues.</p>
-            {% endfor %}
-        </div>
-    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-issues').style.display = 'block';
+            
+            // Update active button state
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.querySelector(`.tab-button:nth-child(${
+                tabName === 'new' ? 1 : tabName === 'pending' ? 2 : 3
+            })`).classList.add('active');
+        }
 
-    <!-- Completed Issues Tab -->
-    <div id="completed-issues" class="tab-content" style="display: none;">
-        <div class="grid">
-            {% for issue in completed_issues %}
-                <div class="card">
-                    <h3>{{ issue.title }}</h3>
-                    <p>{{ issue.description|truncatewords:30 }}</p>
-                    <p>Location: {{ issue.location }}</p>
-                    <p>Upvotes: {{ issue.upvotes_count }}</p>
-                    <a href="{% url 'issue_detail' issue.id %}" class="btn btn-primary">View Details</a>
-                </div>
-            {% empty %}
-                <p>No completed issues.</p>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
-<script>
-function showTab(tabName) {
-    // Hide all tabs
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.style.display = 'none';
-    });
-    // Show the selected tab
-    document.getElementById(tabName + '-issues').style.display = 'block';
-}
-</script>
-
-{% endblock %}
-
-{% block css %}
-
-{% endblock %}
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 10) {
+                navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            } else {
+                navbar.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
