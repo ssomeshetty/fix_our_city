@@ -134,7 +134,9 @@
             width: 30px; /* Customize as needed */
             height: 3px; /* Customize as needed */
         }
-
+        i{
+            padding-right : 5px;
+        }
     </style>
 </head>
 
@@ -153,13 +155,17 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        {% if user.role == 'public' %}
-                            <a href="{% url 'view_issues' %}" class="nav-link">View Issues</a>
-                        {% elif user.role == 'authority' %}
-                            <a href="{% url 'authority_dashboard' %}" class="nav-link">Dashboard</a>
-                        {% elif user.role == 'contractor' %}
-                            <a href="{% url 'contractor_dashboard' %}" class="nav-link">Dashboard</a>
-                        {% endif %}
+                    {% if user.role == 'public' %}
+                        <a class="nav-link" href="{% url 'view_issues' %}"><i class="fas fa-list me-1"></i>View Issues</a>
+                    {% elif user.role == 'authority' %}
+                        <a class="nav-link" href="{% url 'authority_dashboard' %}">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    {% elif user.role == 'contractor' %}
+                        <a class="nav-link" href="{% url 'contractor_dashboard' %}">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                    {% endif %}
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user me-1"></i>Profile</a>
