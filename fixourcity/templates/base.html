@@ -1,97 +1,604 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}FixOurCity{% endblock %}</title>
+    <title>FixOurCity - Transform Urban Infrastructure Together</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <style>
         /* Custom styles for the site */
         :root {
-            --primary-color: #1a237e;
-            --primary-dark: #283593;
+            --primary-color: #9c4d97; /* Light Purple */
+            --primary-dark: #7a3e76; /* Darker Purple */
+            --secondary-color: #ff80ab; /* Light Pink */
+            --accent-color: #f48fb1; /* Lighter Pink */
             --white: #ffffff;
+            --light-gray: rgb(215, 191, 216); /* Soft Light Purple */
+            --dark-gray: #343a40;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
+             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, rgba(215, 191, 216, 0.8), rgba(122, 62, 118, 0.5));
             margin: 0;
+            overflow-x: hidden;
+            animation: fadeIn 1s ease-in-out;
         }
 
+                
+        /* Navbar */
         .navbar {
             background-color: var(--primary-color);
-            box-shadow: 0 2px 10px rgba(100, 43, 43, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+            padding: 15px 0;
+            animation: slideInFromTop 0.8s ease-out;
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+            margin-right: 8px;
+            color: var(--accent-color);
+        }
+
+        .nav-link {
+            font-weight: 500;
+            padding: 8px 15px !important;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
         }
 
         .hero {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #303f9f 100%);
+            background-image: linear-gradient(135deg, rgba(156, 77, 151, 0.9) 0%, rgba(122, 62, 118, 0.9) 100%), url('{% static "images/c.jpg" %}');
+            background-size: cover;
+            background-position: center;
             color: var(--white);
-            padding: 100px 0;
+            padding: 150px 0 100px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease-in-out;
+
         }
 
-        .feature-card {
-            border-radius: 15px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: var(--light-gray);
+            clip-path: polygon(0 50%, 100% 0, 100% 100%, 0% 100%);
         }
 
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            line-height: 1.2;
+            animation: fadeInUp 1s ease-out;
+
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            font-weight: 400;
+            opacity: 0.9;
+            animation: fadeInUp 1.2s ease-out;
+
+        }
+
+        .hero-image {
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+
+        }
+
+        .hero-image:hover {
+            transform: translateY(-10px);
+
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s ease;
         }
 
         .btn-primary:hover {
             background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-accent {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: var(--dark-gray);
+        }
+
+        .btn-accent:hover {
+            background-color: #f06292;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-outline-light:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-title {
+            position: relative;
+            margin-bottom: 60px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -15px;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+
+        .feature-card {
+            background-color: var(--white);
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 70px;
+            height: 70px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            background-color: var(--secondary-color);
+            transform: rotateY(180deg);
+        }
+
+        .feature-card h3 {
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+        }
+
+        .stats-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 80px 0;
+            position: relative;
+             text-align: center;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        .stats-section::before,
+        .stats-section::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 50px;
+            background-color: var(--light-gray);
+        }
+
+        .stats-section::before {
+            top: 0;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 0);
+        }
+
+        .stats-section::after {
+            bottom: 0;
+            clip-path: polygon(0 100%, 100% 0, 100% 100%, 0 100%);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .testimonial-section {
+            padding: 100px 0;
+            background-color: var(--light-gray);
+            animation: fadeIn 1.8s ease-in-out;
+
+        }
+
+        .testimonial-card {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            margin: 20px 10px;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .testimonial-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            object-fit: cover;
+        }
+
+        .testimonial-rating {
+            color: #ffc107;
+            margin-bottom: 10px;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 15px;
+            color: #6c757d;
+        }
+
+        .testimonial-author {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .testimonial-location {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .cta-section {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 80px 0;
+            text-align: center;
+            animation: fadeInUp 2s ease-out;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .cta-text {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .cta-section h2 {
+            font-size: 3rem;
+            margin-bottom: 25px;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
         }
 
         .footer {
-            background-color: #0a1138;
+             background-color: #0a1138;
             color: var(--white);
             padding: 80px 0 20px;
+            animation: fadeIn 1.5s ease-in-out;
         }
+
+        .footer h3 {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .footer h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+
+        .footer a {
+            color: #adb5bd;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .social-icons {
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-5px);
+        }
+
+        .newsletter-form {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;        
+        }
+
+        .newsletter-form input {
+            border-radius: 50px;
+            padding: 12px 20px;
+            border: none;
+        }
+
+        .newsletter-form button {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            border-radius: 50px;
+            padding: 8px 20px;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 991.98px) {
+            .hero {
+                padding: 120px 0 80px;
+            }
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            .hero-image {
+                margin-top: 30px;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .stat-number {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .hero {
+                padding: 100px 0 60px;
+            }
+            .hero-title {
+                font-size: 2rem;
+            }
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            .feature-card {
+                margin-bottom: 20px;
+            }
+            .footer {
+                padding: 60px 0 20px;
+            }
+        }
+
+        /* Animation classes */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .fade-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Issue categories */
+        .category-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-card img {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .category-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            padding: 20px;
+            color: var(--white);
+        }
+
+        .category-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .category-count {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--dark-gray);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 991.98px) {
+            .hero {
+                padding: 120px 0 80px;
+            }
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            .feature-card {
+                margin-bottom: 20px;
+            }
+            .footer {
+                padding: 60px 0 20px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .hero {
+                padding: 100px 0 60px;
+            }
+            .hero-title {
+                font-size: 2rem;
+            }
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            .feature-card {
+                margin-bottom: 20px;
+            }
+            .footer {
+                padding: 60px 0 20px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInFromTop {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
     </style>
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="fas fa-city me-2"></i>FixOurCity
+            <a class="navbar-brand" href="{% url 'base' %}">
+                <i class="fas fa-city"></i>FixOurCity
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
-                        {% if user.role == 'public' %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'create_issue' %}">Report Issue</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'view_issues' %}">View Issues</a></li>
-                        {% elif user.role == 'authority' %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'authority_dashboard' %}">Dashboard</a></li>
-                        {% elif user.role == 'contractor' %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'contractor_dashboard' %}">Dashboard</a></li>
-                        {% endif %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
-                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#categories">Issue Categories</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-outline-light ms-2" href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-accent ms-2" href="{% url 'register' %}">Register</a></li>
                 </ul>
             </div>
         </div>
@@ -101,67 +608,397 @@
     <section class="hero">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-6" data-aos="fade-right">
-                    <h1 class="display-4 fw-bold mb-4">Transform Your City Together</h1>
-                    <p class="lead mb-4">Report, track, and solve urban infrastructure issues in your community. Join us in making our cities better for everyone.</p>
-                    <div class="d-flex gap-3">
-                        <a href="{% url 'register' %}" class="btn btn-light btn-lg">Get Started</a>
-                        {% comment %} <a href="{% url 'join_as_authority' %}" class="btn btn-success btn-lg">Join as Authority</a> {% endcomment %}
+                <div class="col-lg-6 hero-content" data-aos="fade-right">
+                    <h1 class="hero-title">Transform Your City Together</h1>
+                    <p class="hero-subtitle">Report, track, and solve urban infrastructure issues in your community. Join thousands of citizens making their neighborhoods better places to live.</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="{% url 'register' %}" class="btn btn-accent btn-lg">Get Started <i class="fas fa-arrow-right ms-2"></i></a>
+                        <a href="#how-it-works" class="btn btn-outline-light btn-lg">Learn How <i class="fas fa-info-circle ms-2"></i></a>
                     </div>
                 </div>
                 <div class="col-lg-6" data-aos="fade-left">
-                    <img src="/api/placeholder/600/400" alt="City Infrastructure" class="img-fluid rounded-3 shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container position-relative" style="z-index: 1;">
+            <div class="row g-4">
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-item">
+                        <div class="stat-number">20+</div>
+                        <div class="stat-label">Issues Reported</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-item">
+                        <div class="stat-number">10+</div>
+                        <div class="stat-label">Problems Solved</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-item">
+                        <div class="stat-number">3+</div>
+                        <div class="stat-label">Active Contractors</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="stat-item">
+                        <div class="stat-number">1+</div>
+                        <div class="stat-label">Cities Covered</div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
+    <!-- Features Section -->
     <section class="py-5" id="features">
-        <div class="container">
-            <h2 class="text-center mb-5" data-aos="fade-up">How It Works</h2>
+        <div class="container py-5">
+            <h2 class="text-center section-title" data-aos="fade-up">Our Platform Features</h2>
+            <div class="row g-4">
+                <!-- Issue Reporting -->
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card card h-100 p-4">
+                        <div class="text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <h3 class="h5">Issue Reporting</h3>
+                            <p class="text-muted">Users can report issues directly through the platform, providing clear descriptions and location markers.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role-based Access -->
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card card h-100 p-4">
+                        <div class="text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-users-cog"></i>
+                            </div>
+                            <h3 class="h5">Role-based Access</h3>
+                            <p class="text-muted">The platform offers role-specific dashboards for Public, Authority, Contractor, and Admin users with tailored functionalities.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upvoting System -->
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card card h-100 p-4">
+                        <div class="text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-thumbs-up"></i>
+                            </div>
+                            <h3 class="h5">Upvoting System</h3>
+                            <p class="text-muted">Users can upvote issues to increase visibility. Issues with 50+ upvotes are automatically escalated to Authorities.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue Resolution Tracking -->
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-card card h-100 p-4">
+                        <div class="text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <h3 class="h5">Issue Resolution Tracking</h3>
+                            <p class="text-muted">Track the status of reported issues as they move from "New" to "Pending" and finally to "Completed" once resolved by contractors.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contractor Assignment -->
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-card card h-100 p-4">
+                        <div class="text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-hard-hat"></i>
+                            </div>
+                            <h3 class="h5">Contractor Assignment</h3>
+                            <p class="text-muted">Authorities can assign contractors to issues, and contractors can update the issue status to "Completed" once resolved.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Management -->
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="700">
+                    <div class="feature-card card h-100 p-4">
+                        <div class="text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <h3 class="h5">Admin Management</h3>
+                            <p class="text-muted">Admins have complete control over the platform, including user management, issue monitoring, and overall platform maintenance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- How It Works Section -->
+    <section class="py-5 bg-light" id="how-it-works">
+        <div class="container py-5">
+            <h2 class="text-center section-title" data-aos="fade-up">How It Works</h2>
             <div class="row g-4">
                 <!-- Public Users -->
                 <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
                     <div class="feature-card card h-100 p-4">
-                        <div class="feature-icon">
-                            <i class="fas fa-users"></i>
+                        <div class="text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h3 class="h5">Public Users</h3>
+                            <p class="text-muted">Report issues, upvote existing problems, and track progress on community improvements in your area.</p>
+                            <ul class="list-unstyled text-start text-muted">
+                                <li><i class="fas fa-check text-success me-2"></i> Submit detailed reports</li>
+                                <li><i class="fas fa-check text-success me-2"></i> Add photos and location data</li>
+                                <li><i class="fas fa-check text-success me-2"></i> Track issue status updates</li>
+                            </ul>
                         </div>
-                        <h3 class="h5">Public Users</h3>
-                        <p class="text-muted">Report issues, upvote existing problems, and track progress on community improvements.</p>
                     </div>
                 </div>
 
                 <!-- Authorities -->
                 <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
                     <div class="feature-card card h-100 p-4">
-                        <div class="feature-icon">
-                            <i class="fas fa-building"></i>
+                        <div class="text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <h3 class="h5">Authorities</h3>
+                            <p class="text-muted">Review high-priority issues and assign contractors for swift resolution based on urgency and impact.</p>
+                            <ul class="list-unstyled text-start text-muted">
+                                <li><i class="fas fa-check text-success me-2"></i> Dashboard of all reported issues</li>
+                                <li><i class="fas fa-check text-success me-2"></i> Prioritize by urgency and votes</li>
+                                <li><i class="fas fa-check text-success me-2"></i> Assign to specialized contractors</li>
+                            </ul>
                         </div>
-                        <h3 class="h5">Authorities</h3>
-                        <p class="text-muted">Review high-priority issues and assign contractors for swift resolution.</p>
                     </div>
                 </div>
 
                 <!-- Contractors -->
                 <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
                     <div class="feature-card card h-100 p-4">
-                        <div class="feature-icon">
-                            <i class="fas fa-hard-hat"></i>
+                        <div class="text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-hard-hat"></i>
+                            </div>
+                            <h3 class="h5">Contractors</h3>
+                            <p class="text-muted">Access assigned tasks and update progress as repairs are completed with detailed documentation.</p>
+                            <ul class="list-unstyled text-start text-muted">
+                                <li><i class="fas fa-check text-success me-2"></i> Manage work orders efficiently</li>
+                                <li><i class="fas fa-check text-success me-2"></i> Update work status in real-time</li>
+                                <li><i class="fas fa-check text-success me-2"></i> Track performance metrics</li>
+                            </ul>
                         </div>
-                        <h3 class="h5">Contractors</h3>
-                        <p class="text-muted">Access assigned tasks and update progress as repairs are completed.</p>
                     </div>
                 </div>
 
                 <!-- Admins -->
                 <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
                     <div class="feature-card card h-100 p-4">
-                        <div class="feature-icon">
-                            <i class="fas fa-shield-alt"></i>
+                        <div class="text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h3 class="h5">Admins</h3>
+                            <p class="text-muted">Manage platform operations and ensure smooth coordination between all stakeholders.</p>
+                            <ul class="list-unstyled text-start text-muted">
+                                <li><i class="fas fa-check text-success me-2"></i> System-wide oversight</li>
+                                <li><i class="fas fa-check text-success me-2"></i> User account management</li>
+                                <li><i class="fas fa-check text-success me-2"></i> Optimize resolution workflow</li>
+                            </ul>
                         </div>
-                        <h3 class="h5">Admins</h3>
-                        <p class="text-muted">Manage platform operations and ensure smooth coordination between all parties.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Issue Categories Section -->
+    <section class="py-5" id="categories">
+        <div class="container py-5">
+            <h2 class="text-center section-title" data-aos="fade-up">Issue Categories</h2>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="category-card">
+                        <img src='{% static "images/road.jpg" %}' alt="Roads & Highways" class="img-fluid w-100">
+                        <div class="category-overlay">
+                            <h3 class="category-title">Roads & Highways</h3>
+                            <span class="category-count">2 Reports</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="category-card">
+                        <img src= '{% static "images/light.jpg" %}' alt="Street Lighting" class="img-fluid w-100">
+                        <div class="category-overlay">
+                            <h3 class="category-title">Street Lighting</h3>
+                            <span class="category-count">3 Reports</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="category-card">
+                        <img src='{% static "images/water.jpg" %}' alt="Water Supply" class="img-fluid w-100">
+                        <div class="category-overlay">
+                            <h3 class="category-title">Water Supply</h3>
+                            <span class="category-count">0 Reports</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="category-card">
+                        <img src='{% static "images/park.jpg" %}' alt="Parks & Recreation" class="img-fluid w-100">
+                        <div class="category-overlay">
+                            <h3 class="category-title">Parks & Recreation</h3>
+                            <span class="category-count">1 Reports</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="500">
+                    <div class="category-card">
+                        <img src='{% static "images/waste.jpg" %}' alt="Waste Management" class="img-fluid w-100">
+                        <div class="category-overlay">
+                            <h3 class="category-title">Waste Management</h3>
+                            <span class="category-count">5 Reports</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="600">
+                    <div class="category-card">
+                        <img src= '{% static "images/bus.jpg" %}' alt="Public Transport" class="img-fluid w-100">
+                        <div class="category-overlay">
+                            <h3 class="category-title">Public Transport</h3>
+                            <span class="category-count">9 Reports</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Process Steps -->
+    <section class="py-5 bg-light">
+        <div class="container py-5">
+            <h2 class="text-center section-title" data-aos="fade-up">Our Process</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="row g-4">
+                        <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+                            <div class="card border-0 bg-transparent text-center">
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px; font-size: 2rem; font-weight: 700;">1</div>
+                                <div class="card-body">
+                                    <h4 class="card-title h5">Report Issue</h4>
+                                    <p class="card-text text-muted">Submit details and photos of the infrastructure problem you've encountered.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+                            <div class="card border-0 bg-transparent text-center">
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px; font-size: 2rem; font-weight: 700;">2</div>
+                                <div class="card-body">
+                                    <h4 class="card-title h5">Verification</h4>
+                                    <p class="card-text text-muted">City authorities review and verify the reported issue within 48 hours.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+                            <div class="card border-0 bg-transparent text-center">
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px; font-size: 2rem; font-weight: 700;">3</div>
+                                <div class="card-body">
+                                    <h4 class="card-title h5">Assignment</h4>
+                                    <p class="card-text text-muted">The issue is assigned to the appropriate contractor for resolution.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+                            <div class="card border-0 bg-transparent text-center">
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px; font-size: 2rem; font-weight: 700;">4</div>
+                                <div class="card-body">
+                                    <h4 class="card-title h5">Resolution</h4>
+                                    <p class="card-text text-muted">Problem fixed and verified with before/after documentation.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonial-section" id="testimonials">
+        <div class="container py-5">
+            <h2 class="text-center section-title" data-aos="fade-up">What Our Users Say</h2>
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="testimonial-card text-center">
+                        <img src='{% static "images/mohan.jpeg" %}' alt="User Avatar" class="testimonial-avatar mx-auto">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">"I reported a dangerous pothole on my street and it was fixed within 3 days! The app made it so easy to submit the issue with photos and track the progress."</p>
+                        <h5 class="testimonial-author">Mohana Das</h5>
+                        <p class="testimonial-location">Resident, Bengaluru</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="testimonial-card text-center">
+                        <img src='{% static "images/nikhil.jpg" %}' alt="User Avatar" class="testimonial-avatar mx-auto">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <p class="testimonial-text">"As a city official, this platform has revolutionized how we manage infrastructure issues. The data analytics help us prioritize resources effectively."</p>
+                        <h5 class="testimonial-author">Nikhil</h5>
+                        <p class="testimonial-location">BBMP Bengaluru</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="testimonial-card text-center">
+                        <img src='{% static "images/narayan.jpeg" %}' alt="User Avatar" class="testimonial-avatar mx-auto">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonial-text">"Our maintenance team is now much more efficient thanks to FixOurCity. The detailed reports with exact locations and photos save us valuable time in the field."</p>
+                        <h5 class="testimonial-author">Narayan</h5>
+                        <p class="testimonial-location">Contractor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="cta-title" data-aos="fade-up">Ready to Improve Your City?</h2>
+                    <p class="cta-text" data-aos="fade-up" data-aos-delay="100">Join thousands of active citizens making a difference in their communities. Sign up today and start reporting issues that matter.</p>
+                    <div data-aos="fade-up" data-aos-delay="200">
+                        <a href="{% url 'register' %}" class="btn btn-accent btn-lg me-3 mb-3">Create Account</a>
+                        <a href="#how-it-works" class="btn btn-outline-light btn-lg mb-3">Learn More</a>
                     </div>
                 </div>
             </div>
@@ -173,41 +1010,57 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 mb-4">
-                    <h3 class="h5 mb-3">About FixOurCity</h3>
-                    <p class="text-muted">Making our cities better, together through community-driven urban development and efficient issue resolution.</p>
+                    <h3 class="h5">About FixOurCity</h3>
+                    <p>Making our cities better, together through community-driven urban development and efficient issue resolution.</p>
                     <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
                 <div class="col-lg-2 mb-4">
-                    <h3 class="h5 mb-3">Quick Links</h3>
+                    <h3 class="h5">Quick Links</h3>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-muted text-decoration-none">About Us</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Features</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Contact</a></li>
+                        <li><a href="#" class="text-decoration-none">About Us</a></li>
+                        <li><a href="#features" class="text-decoration-none">Features</a></li>
+                        <li><a href="#how-it-works" class="text-decoration-none">How It Works</a></li>
+                        <li><a href="#testimonials" class="text-decoration-none">Testimonials</a></li>
+                        <li><a href="#" class="text-decoration-none">Contact</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-2 mb-4">
-                    <h3 class="h5 mb-3">Legal</h3>
+                    <h3 class="h5">Legal</h3>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-muted text-decoration-none">Privacy Policy</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Terms of Service</a></li>
+                        <li><a href="#" class="text-decoration-none">Privacy Policy</a></li>
+                        <li><a href="#" class="text-decoration-none">Terms of Service</a></li>
+                        <li><a href="#" class="text-decoration-none">Cookie Policy</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4 mb-4">
-                    <h3 class="h5 mb-3">Newsletter</h3>
-                    <p class="text-muted">Stay updated with the latest news and updates.</p>
-                    <form class="d-flex">
-                        <input type="email" class="form-control me-2" placeholder="Enter your email">
-                        <button class="btn btn-primary">Subscribe</button>
+                    <h3 class="h5">Newsletter</h3>
+                    <p >Stay updated with the latest news and community achievements.</p>
+                    <form class="newsletter-form mt-3">
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="Your email address">
+                            <button class="btn btn-accent" type="submit">Subscribe</button>
+                        </div>
                     </form>
                 </div>
             </div>
             <hr class="my-4">
-            <div class="text-center text-muted">
-                <small>&copy; 2024 FixOurCity. All rights reserved.</small>
+            <div class="text-center ">
+                <div class="row">
+                    <div class="col-md-6 text-md-start">
+                        <small>&copy; 2025 FixOurCity. All rights reserved.</small>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <small>
+                            <a href="#" class="text-decoration-none  me-3">FAQ</a>
+                            <a href="#" class="text-decoration-none  me-3">Support</a>
+                        </small>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
@@ -217,23 +1070,74 @@
     <!-- AOS Animation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
-        AOS.init({ duration: 800, once: true });
+        // Initialize AOS animation library
+        AOS.init({ 
+            duration: 800, 
+            once: true,
+            offset: 100
+        });
+        
+        // Navbar color change on scroll
         window.addEventListener('scroll', function() {
             if (window.scrollY > 50) {
-                document.querySelector('.navbar').style.background = '#0a1138';
+                document.querySelector('.navbar').style.background = 'rgba(10, 17, 56, 0.95)';
+                document.querySelector('.navbar').style.padding = '10px 0';
             } else {
-                document.querySelector('.navbar').style.background = '#1a237e';
+                document.querySelector('.navbar').style.background = 'var(--primary-color)';
+                document.querySelector('.navbar').style.padding = '15px 0';
             }
         });
+        
+        // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const headerOffset = 80;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
             });
         });
         
+        // Animation for elements appearing on scroll
+        const animateElements = document.querySelectorAll('.fade-up');
+        
+        const checkIfInView = () => {
+            animateElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementTop < windowHeight - 100) {
+                    element.classList.add('active');
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', checkIfInView);
+        window.addEventListener('load', checkIfInView);
+        
+        // Mobile menu closer after clicking a link
+        const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+        const navbarCollapse = document.querySelector('.navbar-collapse');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (navbarCollapse.classList.contains('show')) {
+                    navbarCollapse.classList.remove('show');
+                }
+            });
+        });
     </script>
 </body>
 </html>
