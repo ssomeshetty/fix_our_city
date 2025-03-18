@@ -1,3 +1,6 @@
+{% load custom_filters %}
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -268,6 +271,101 @@
                 grid-template-columns: 1fr;
             }
         }
+         @media (max-width: 992px) {
+        .navbar-brand {
+            padding-left: 1rem;
+        }
+
+        #navbarNav {
+            padding-right: 1rem;
+        }
+
+        .nav-item {
+            margin: 0.5rem 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .issue-container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+
+        .issue-title {
+            font-size: 1.5rem;
+        }
+
+        .user-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .profile-image {
+            margin-bottom: 1rem;
+        }
+
+        .upvote-section {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .image-grid {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+
+        .image-card img {
+            height: 150px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        body {
+            padding-top: 66px;
+        }
+
+        .navbar-brand {
+            font-size: 1.1rem;
+            padding-left: 0.5rem;
+        }
+
+        .issue-container {
+            margin: 0.5rem;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .issue-title {
+            font-size: 1.3rem;
+        }
+
+        .image-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .image-card img {
+            height: 200px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.75rem;
+        }
+
+        .btn-warning {
+            width: 100%;
+            margin-top: 1rem;
+        }
+    }
+
+    /* Add this to handle the rate button positioning */
+    .rate-section {
+        text-align: center;
+        margin: 2rem 0;
+    }
     </style>
 </head>
 <body>
@@ -285,7 +383,7 @@
                 <ul class="navbar-nav ms-auto ml-auto">
                     <li class="nav-item">
                     {% if user.role == 'public' %}
-                        <a href="{% url 'view_issues' %}" class="nav-link">View Issues</a>
+                        <a href="{% url 'view_issues' %}" class="nav-link"><i class="fas fa-list me-1"></i>View Issues</a>
                     {% elif user.role == 'authority' %}
                         <a href="{% url 'authority_dashboard' %}" class="nav-link">Dashboard</a>
                     {% elif user.role == 'contractor' %}
@@ -304,7 +402,9 @@
     </nav>
     <div class="issue-container">
         <div class="user-header">
-            <img class="profile-image" src="{{ user.profile_picture.url }}" alt="User profile">
+            <img class="profile-image" 
+                src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'images/nikhil.jpg' %}{% endif %}" 
+                alt="User profile">
             <div class="user-info">
                 <h3 class="username">{{ issue.reported_by.username }}</h3>
                 <span class="post-time">{{ issue.created_at|timesince }} ago</span>
@@ -378,7 +478,17 @@
                 </form>
             {% endif %}
         </div>
+        {% if issue.status == 'completed' and issue.contractor %}
+        <div class="rate-section">
+            <a href="{% url 'rate_contractor' issue.id %}" class="btn btn-warning">
+                {% if user_has_rated %}Update Rating{% else %}Rate Contractor{% endif %}
+            </a>
+        </div>
+        {% endif %}
+        
     </div>
+
+    
 
     <script>
         function upvoteIssue(issueId) {

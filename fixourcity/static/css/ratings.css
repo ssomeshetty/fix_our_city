@@ -1,0 +1,62 @@
+/* static/css/ratings.css */
+
+.star-rating {
+    color: #ffc107;
+}
+
+.badge-bronze {
+    background-color: #cd7f32;
+    color: white;
+}
+
+.rating-distribution .progress {
+    height: 8px;
+    background-color: #e9ecef;
+}
+
+.rating-distribution .progress-bar {
+    background-color: #ffc107;
+}
+
+.contractor-card {
+    transition: all 0.3s ease;
+}
+
+.contractor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.rating-option {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rating-option:hover {
+    transform: translateY(-2px);
+}
+
+.leaderboard-rank {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+.rank-1 {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.rank-2 {
+    background-color: #e9ecef;
+    color: #212529;
+}
+
+.rank-3 {
+    background-color: #cd7f32;
+    color: white;
+}

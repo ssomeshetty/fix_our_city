@@ -11,19 +11,158 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <style>
         /* Custom styles for the site */
+        /* Animated Background Styles */
+        /* Animated Background Styles */
+        
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(215, 191, 216, 0.8), rgba(122, 62, 118, 0.5));
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='%239c4d97' fill-opacity='0.1' d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z'%3E%3C/path%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .floating-shape {
+            position: absolute;
+            background: var(--primary-color);
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: float 12s infinite ease-in-out;
+        }
+
+        .shape1 {
+            width: 80px;
+            height: 80px;
+            left: 5%;
+            top: 20%;
+            animation-delay: 0s;
+            animation-duration: 18s;
+            background: var(--primary-color);
+        }
+
+        .shape2 {
+            width: 120px;
+            height: 120px;
+            right: 10%;
+            top: 40%;
+            animation-delay: 2s;
+            animation-duration: 16s;
+            background: var(--secondary-color);
+        }
+
+        .shape3 {
+            width: 60px;
+            height: 60px;
+            left: 20%;
+            bottom: 30%;
+            animation-delay: 4s;
+            animation-duration: 14s;
+            background: var(--accent-color);
+        }
+
+        .shape4 {
+            width: 100px;
+            height: 100px;
+            right: 20%;
+            bottom: 10%;
+            animation-delay: 6s;
+            animation-duration: 20s;
+            background: var(--primary-dark);
+        }
+
+        .shape5 {
+            width: 50px;
+            height: 50px;
+            left: 40%;
+            top: 10%;
+            animation-delay: 8s;
+            animation-duration: 15s;
+            background: var(--accent-color);
+        }
+
+        /* City skyline silhouette at the bottom */
+        .city-silhouette {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 180px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'%3E%3Cpath fill='%237a3e76' fill-opacity='0.4' d='M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,202.7C672,203,768,181,864,181.3C960,181,1056,203,1152,208C1248,213,1344,203,1392,197.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            opacity: 0.8;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+            50% {
+                transform: translateY(-40px) rotate(0deg);
+            }
+            75% {
+                transform: translateY(-20px) rotate(-5deg);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 767.98px) {
+            .shape1, .shape2, .shape3, .shape4, .shape5 {
+                transform: scale(0.7);
+            }
+            
+            .city-silhouette {
+                height: 120px;
+            }
+        }
         :root {
-            --primary-color: #9c4d97; /* Light Purple */
-            --primary-dark: #7a3e76; /* Darker Purple */
-            --secondary-color: #ff80ab; /* Light Pink */
-            --accent-color: #f48fb1; /* Lighter Pink */
+            --primary-color: #FF6B6B; /* Vibrant Coral */
+            --primary-dark: #FF4757; /* Deeper Coral */
+            --secondary-color: #4ECDC4; /* Fresh Teal */
+            --accent-color: #FF9F43; /* Sunny Orange */
             --white: #ffffff;
-            --light-gray: rgb(215, 191, 216); /* Soft Light Purple */
-            --dark-gray: #343a40;
+            --light-gray: #F8F9FA;
+            --dark-gray: #2D3436;
+        }
+
+        /* Animated Background Update */
+        .animated-bg {
+            background: linear-gradient(135deg, rgba(255,107,107,0.1) 0%, rgba(78,205,196,0.1) 100%);
+        }
+
+        .animated-bg::before {
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='%23FF6B6B' fill-opacity='0.1' d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z'%3E%3C/path%3E%3C/svg%3E");
+        }
+
+        /* Update City Silhouette */
+        .city-silhouette {
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'%3E%3Cpath fill='%23FF6B6B' fill-opacity='0.3' d='M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,202.7C672,203,768,181,864,181.3C960,181,1056,203,1152,208C1248,213,1344,203,1392,197.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
         }
 
         body {
              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(180deg, rgba(215, 191, 216, 0.8), rgba(122, 62, 118, 0.5));
             margin: 0;
             overflow-x: hidden;
             animation: fadeIn 1s ease-in-out;
@@ -58,8 +197,7 @@
         }
 
         .hero {
-            background-image: linear-gradient(135deg, rgba(156, 77, 151, 0.9) 0%, rgba(122, 62, 118, 0.9) 100%), url('{% static "images/c.jpg" %}');
-            background-size: cover;
+            background-image: linear-gradient(135deg, rgba(255,107,107,0.9) 0%, rgba(255,159,67,0.9) 100%), url('{% static "images/c.jpg" %}');            background-size: cover;
             background-position: center;
             color: var(--white);
             padding: 150px 0 100px;
@@ -336,7 +474,7 @@
         }
 
         .footer {
-             background-color: #0a1138;
+            background-color: var(--dark-gray); 
             color: var(--white);
             padding: 80px 0 20px;
             animation: fadeIn 1.5s ease-in-out;
@@ -597,6 +735,11 @@
                     <li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
                     <li class="nav-item"><a class="nav-link" href="#categories">Issue Categories</a></li>
                     <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contractor_leaderboard' %}">
+                            <i class="fas fa-trophy mr-1"></i> Contractor Leaderboard
+                        </a>
+                    </li>
                     <li class="nav-item"><a class="nav-link btn btn-outline-light ms-2" href="{% url 'login' %}">Login</a></li>
                     <li class="nav-item"><a class="nav-link btn btn-accent ms-2" href="{% url 'register' %}">Register</a></li>
                 </ul>
@@ -1138,6 +1281,168 @@
                 }
             });
         });
+        // Animated Background JS
+document.addEventListener('DOMContentLoaded', function() {
+    // Create animated background elements
+    const body = document.body;
+    
+    // Create main container
+    const animatedBg = document.createElement('div');
+    animatedBg.className = 'animated-bg';
+    
+    // Create floating shapes container
+    const floatingShapes = document.createElement('div');
+    floatingShapes.className = 'floating-shapes';
+    
+    // Create 5 floating shapes
+    for (let i = 1; i <= 5; i++) {
+        const shape = document.createElement('div');
+        shape.className = `floating-shape shape${i}`;
+        floatingShapes.appendChild(shape);
+    }
+    
+    // Create city silhouette
+    const citySilhouette = document.createElement('div');
+    citySilhouette.className = 'city-silhouette';
+    
+    // Add particle effects
+    const particlesDiv = document.createElement('div');
+    particlesDiv.id = 'particles-js';
+    particlesDiv.style.position = 'absolute';
+    particlesDiv.style.top = '0';
+    particlesDiv.style.left = '0';
+    particlesDiv.style.width = '100%';
+    particlesDiv.style.height = '100%';
+    particlesDiv.style.zIndex = '0';
+    
+    // Append all elements
+    animatedBg.appendChild(floatingShapes);
+    animatedBg.appendChild(citySilhouette);
+    animatedBg.appendChild(particlesDiv);
+    
+    // Add to body as the first child
+    if (body.firstChild) {
+        body.insertBefore(animatedBg, body.firstChild);
+    } else {
+        body.appendChild(animatedBg);
+    }
+    
+    // Add urban maintenance icons that float randomly
+    const icons = [
+        'fa-road', 'fa-building', 'fa-tree', 'fa-water', 
+        'fa-traffic-light', 'fa-recycle', 'fa-hard-hat', 
+        'fa-tools', 'fa-truck', 'fa-lightbulb'
+    ];
+    
+    // Add 8 random icons
+    for (let i = 0; i < 8; i++) {
+        const iconIndex = Math.floor(Math.random() * icons.length);
+        const icon = document.createElement('i');
+        icon.className = `fas ${icons[iconIndex]} floating-icon`;
+        icon.style.position = 'absolute';
+        icon.style.color = 'rgba(255, 255, 255, 0.3)';
+        icon.style.fontSize = `${Math.random() * 20 + 10}px`;
+        icon.style.left = `${Math.random() * 100}%`;
+        icon.style.top = `${Math.random() * 100}%`;
+        icon.style.animation = `float ${Math.random() * 10 + 10}s infinite ease-in-out`;
+        icon.style.animationDelay = `${Math.random() * 5}s`;
+        icon.style.zIndex = '0';
+        
+        floatingShapes.appendChild(icon);
+    }
+    
+    // Initialize particles.js if available
+    if (typeof particlesJS !== 'undefined') {
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 30,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: '#ffffff'
+                },
+                shape: {
+                    type: 'circle',
+                    stroke: {
+                        width: 0,
+                        color: '#000000'
+                    }
+                },
+                opacity: {
+                    value: 0.3,
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 2,
+                        size_min: 0.1,
+                        sync: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#9c4d97',
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1,
+                    direction: 'none',
+                    random: true,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false,
+                    attract: {
+                        enable: false,
+                        rotateX: 600,
+                        rotateY: 1200
+                    }
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: 'grab'
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: 'push'
+                    },
+                    resize: true
+                },
+                modes: {
+                    grab: {
+                        distance: 140,
+                        line_linked: {
+                            opacity: 0.5
+                        }
+                    },
+                    push: {
+                        particles_nb: 3
+                    }
+                }
+            },
+            retina_detect: true
+        });
+    }
+});
     </script>
 </body>
 </html>

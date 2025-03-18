@@ -123,15 +123,92 @@ def upvote_issue(request, issue_id):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
+# Updated home view in issues/views.py to include top contractors
+
+from django.db.models import Avg, Count
+from contractor.models import Contractor
+
 @login_required
 def home(request):
     user_issues = Issue.objects.filter(reported_by=request.user)
     trending_issues = Issue.objects.filter(upvotes_count__gte=50)
     recent_issues = Issue.objects.order_by('-created_at')[:10]
     
+    # Get top contractors for the widget
+    top_contractors = Contractor.objects.annotate(
+        avg_rating=Avg('received_ratings__rating'),
+        num_ratings=Count('received_ratings')
+    ).filter(
+        num_ratings__gt=0  # Only include contractors with at least one rating
+    ).order_by('-avg_rating')[:5]  # Get top 5
+    
+    ranked_top_contractors = []
+    for contractor in top_contractors:
+        ranked_top_contractors.append({
+            'contractor': contractor,
+            'avg_rating': contractor.avg_rating,
+            'num_ratings': contractor.num_ratings
+        })
+    
     context = {
         'user_issues': user_issues,
         'trending_issues': trending_issues,
-        'recent_issues': recent_issues
+        'recent_issues': recent_issues,
+        'top_contractors': ranked_top_contractors
     }
     return render(request, 'home.html', context)
+
+# issues/views.py
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from .models import Issue, UserRating
+from .forms import UserRatingForm
+from django.contrib import messages  # For displaying success/error messages
+
+@login_required
+def rate_contractor(request, issue_id):
+    issue = get_object_or_404(Issue, id=issue_id, status='completed')
+    contractor = issue.contractor
+    
+    if not contractor:
+        # Handle case where issue doesn't have a contractor assigned
+        messages.error(request, "This issue doesn't have a contractor assigned.")
+        return redirect('issue_detail', issue_id=issue.id)
+    
+    # Check if the user has already rated this issue
+    existing_rating = UserRating.objects.filter(user=request.user, issue=issue).first()
+    
+    if request.method == 'POST':
+        # If rating exists, update it; otherwise create new
+        if existing_rating:
+            form = UserRatingForm(request.POST, instance=existing_rating)
+        else:
+            form = UserRatingForm(request.POST)
+            
+        if form.is_valid():
+            rating = form.save(commit=False)
+            rating.user = request.user
+            rating.issue = issue
+            rating.contractor = contractor
+            rating.updated_at = timezone.now()
+            rating.save()
+            
+            # Update the contractor's average rating in the background
+            # This could be done with signals or a post-save hook
+            
+            messages.success(request, "Your rating has been submitted successfully.")
+            return redirect('issue_detail', issue_id=issue.id)
+    else:
+        # Pre-populate form if rating exists
+        if existing_rating:
+            form = UserRatingForm(instance=existing_rating)
+        else:
+            form = UserRatingForm()
+
+    return render(request, 'rate_contractor.html', {
+        'issue': issue,
+        'contractor': contractor,
+        'form': form,
+        'existing_rating': existing_rating,
+    })

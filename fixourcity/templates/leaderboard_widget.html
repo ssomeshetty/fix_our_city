@@ -1,0 +1,58 @@
+<!-- Save as contractor/templates/contractor/leaderboard_widget.html -->
+
+<div class="card shadow-sm">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Top Rated Contractors</h5>
+        <a href="{% url 'contractor_leaderboard' %}" class="btn btn-sm btn-outline-primary">View All</a>
+    </div>
+    <div class="card-body p-0">
+        {% if top_contractors %}
+            <ul class="list-group list-group-flush">
+                {% for entry in top_contractors %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div class="mr-3 text-center" style="width: 24px;">
+                                    {% if forloop.counter <= 3 %}
+                                        <span class="badge badge-pill 
+                                            {% if forloop.counter == 1 %}badge-warning{% elif forloop.counter == 2 %}badge-light{% else %}badge-bronze{% endif %} 
+                                            p-1">
+                                            {{ forloop.counter }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted">{{ forloop.counter }}</span>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <a href="{% url 'contractor_detail' entry.contractor.id %}" class="text-decoration-none">
+                                        <span class="font-weight-medium">{{ entry.contractor.name }}</span>
+                                    </a>
+                                    <div class="small text-muted">{{ entry.contractor.expertise }}</div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="font-weight-bold text-warning">{{ entry.avg_rating|floatformat:1 }}</div>
+                                <div class="star-rating small">
+                                    {% for i in '12345' %}
+                                        {% if forloop.counter <= entry.avg_rating %}
+                                            <i class="fas fa-star text-warning"></i>
+                                        {% elif forloop.counter <= entry.avg_rating|add:0.5 %}
+                                            <i class="fas fa-star-half-alt text-warning"></i>
+                                        {% else %}
+                                            <i class="far fa-star text-warning"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="text-muted small">{{ entry.num_ratings }} rating{{ entry.num_ratings|pluralize }}</div>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="p-3 text-center">
+                <p class="text-muted mb-0">No rated contractors yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>

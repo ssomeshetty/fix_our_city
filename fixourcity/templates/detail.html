@@ -1,0 +1,688 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ contractor.name }} - Contractor Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #4e54c8;
+            --secondary-color: #8c55f6;
+            --accent-color: #ff6b6b;
+            --success-color: #20c997;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+        
+        body {
+            background: linear-gradient(135deg,rgb(210, 163, 199) 0%, #e6eeff 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--dark-color);
+        }
+        
+        /* Card Styles */
+        .card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            margin-bottom: 25px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 1.25rem;
+            border-bottom: none;
+            font-weight: 600;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .card-title {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        
+        /* Profile Image */
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border: 4px solid white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-img-bg {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .profile-img-small {
+            width: 45px;
+            height: 45px;
+            border: 2px solid white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-img-bg-small {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card:hover .profile-img,
+        .card:hover .profile-img-bg {
+            transform: scale(1.05);
+        }
+        
+        /* Rating Stars */
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .star-rating-left {
+            display: flex;
+            justify-content: flex-start;
+            gap: 3px;
+        }
+        
+        .star-rating i {
+            font-size: 1.2rem;
+            color: var(--warning-color);
+        }
+        
+        .star-pulse {
+            animation: star-pulse 1.5s infinite;
+        }
+        
+        @keyframes star-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Rating Distribution */
+        .progress {
+            height: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .progress-bar {
+            transition: width 1.5s ease-in-out;
+            background: linear-gradient(45deg, var(--warning-color), #ffad33);
+        }
+        
+        .rating-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        .rating-row:hover {
+            transform: translateX(5px);
+        }
+        
+        /* Reviews */
+        .review-item {
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+        }
+        
+        .review-item:hover {
+            background-color: rgba(78, 84, 200, 0.05);
+            transform: scale(1.01);
+        }
+        
+        .review-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .review-text {
+            white-space: pre-wrap;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        /* Tables */
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .table thead th {
+            background-color: rgba(78, 84, 200, 0.1);
+            color: var(--primary-color);
+            font-weight: 600;
+            border: none;
+            padding: 12px 15px;
+        }
+        
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(78, 84, 200, 0.05);
+            transform: scale(1.01);
+        }
+        
+        .table td {
+            vertical-align: middle;
+            padding: 12px 15px;
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Info List */
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .info-list-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+        
+        .info-list-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .info-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(78, 84, 200, 0.1), rgba(140, 85, 246, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .info-list-item:hover .info-icon {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            transform: rotate(360deg);
+        }
+        
+        /* Badges */
+        .badge-expertise {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+        
+        /* Floating BG */
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .floating-bg div {
+            position: absolute;
+            display: block;
+            width: 40px;
+            height: 40px;
+            background: rgba(78, 84, 200, 0.1);
+            animation: animate 25s linear infinite;
+            bottom: -150px;
+            border-radius: 50%;
+        }
+        
+        .floating-bg div:nth-child(1) {
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+            background: rgba(255, 107, 107, 0.1);
+        }
+        
+        .floating-bg div:nth-child(2) {
+            left: 20%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 2s;
+            animation-duration: 25s;
+            background: rgba(140, 85, 246, 0.1);
+        }
+        
+        .floating-bg div:nth-child(3) {
+            left: 30%;
+            width: 70px;
+            height: 70px;
+            animation-delay: 4s;
+            animation-duration: 20s;
+            background: rgba(32, 201, 151, 0.1);
+        }
+        
+        .floating-bg div:nth-child(4) {
+            left: 40%;
+            width: 120px;
+            height: 120px;
+            animation-delay: 0s;
+            animation-duration: 15s;
+            background: rgba(255, 193, 7, 0.1);
+        }
+        
+        .floating-bg div:nth-child(5) {
+            left: 70%;
+            width: 90px;
+            height: 90px;
+            animation-delay: 3s;
+            animation-duration: 22s;
+            background: rgba(78, 84, 200, 0.1);
+        }
+        
+        @keyframes animate {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Rating Score */
+        .rating-score {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin: 0 auto 15px;
+            position: relative;
+        }
+        
+        .rating-score::after {
+            content: '';
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            animation: spin 10s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Hover Effects */
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-bg">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <div class="container py-5">
+        <div class="row">
+            <!-- Contractor Profile -->
+            <div class="col-md-4">
+                <div class="card shadow animate__animated animate__fadeInLeft">
+                    <div class="card-body text-center">
+                        <div class="position-relative mx-auto">
+                            {% if contractor.user.profile_picture %}
+                                <img src="{{ contractor.user.profile_picture.url }}" class="rounded-circle profile-img" alt="{{ contractor.name }}">
+                            {% else %}
+                                <div class="profile-img-bg mx-auto">
+                                    <span class="display-4 text-white">{{ contractor.name|first }}</span>
+                                </div>
+                            {% endif %}
+                            <div class="position-absolute" style="bottom: 5px; right: 5px;">
+                                <span class="badge bg-success rounded-circle p-2">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <h3 class="card-title mb-1 animate__animated animate__fadeIn animate__delay-1s">{{ contractor.name }}</h3>
+                        <div class="badge-expertise animate__animated animate__fadeIn animate__delay-1s">
+                            <i class="fas fa-tools"></i>
+                            {{ contractor.expertise }}
+                        </div>
+                        
+                        <div class="my-4 animate__animated animate__fadeIn animate__delay-2s">
+                            <div class="rating-score">
+                                {{ avg_rating|floatformat:1 }}
+                            </div>
+                            <div class="star-rating">
+                                {% for i in '12345' %}
+                                    {% if forloop.counter <= avg_rating %}
+                                        <i class="fas fa-star star-pulse"></i>
+                                    {% elif forloop.counter <= avg_rating|add:0.5 %}
+                                        <i class="fas fa-star-half-alt"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <p class="text-muted">
+                                {{ total_ratings }} rating{{ total_ratings|pluralize }}
+                            </p>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="text-left animate__animated animate__fadeIn animate__delay-2s">
+                            <ul class="info-list">
+                                <li class="info-list-item">
+                                    <div class="info-icon">
+                                        <i class="fas fa-tools"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Completed Issues:</strong> 
+                                        <span class="text-primary">{{ completed_issues.count }}</span>
+                                    </div>
+                                </li>
+                                <li class="info-list-item">
+                                    <div class="info-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Authority:</strong> 
+                                        <span class="text-primary">{{ contractor.authority.name }}</span>
+                                    </div>
+                                </li>
+                                <li class="info-list-item">
+                                    <div class="info-icon">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Contact:</strong> 
+                                        <span class="text-primary">{{ contractor.contact_info }}</span>
+                                    </div>
+                                </li>
+                                <li class="info-list-item">
+                                    <div class="info-icon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Since:</strong> 
+                                        <span class="text-primary">{{ contractor.created_at|date:"F Y" }}</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ratings and Reviews -->
+            <div class="col-md-8">
+                <div class="card shadow animate__animated animate__fadeInRight">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Rating Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if total_ratings > 0 %}
+                            <div class="row align-items-center">
+                                <div class="col-md-4 text-center">
+                                    <div class="display-4">{{ avg_rating|floatformat:1 }}</div>
+                                    <div class="star-rating h4">
+                                        {% for i in '12345' %}
+                                            {% if forloop.counter <= avg_rating %}
+                                                <i class="fas fa-star text-warning"></i>
+                                            {% elif forloop.counter <= avg_rating|add:0.5 %}
+                                                <i class="fas fa-star-half-alt text-warning"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-warning"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="text-muted">
+                                        {{ total_ratings }} rating{{ total_ratings|pluralize }}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-8">
+                                    {% for star in '54321'|make_list %}
+                                        {% with star_value=star|add:"0" %}
+                                        <div class="rating-row">
+                                            <div style="width: 60px" class="text-right pr-2">
+                                                {{ star }} <i class="fas fa-star text-warning"></i>
+                                            </div>
+                                            <div class="progress flex-grow-1">
+                                                <div class="progress-bar" 
+                                                     role="progressbar" 
+                                                     style="width: {{ distribution_percentage|get_item:star_value }}%;" 
+                                                     aria-valuenow="{{ distribution_percentage|get_item:star_value }}" 
+                                                     aria-valuemin="0" 
+                                                     aria-valuemax="100"></div>
+                                            </div>
+                                            <div class="text-muted ml-2" style="width: 50px">
+                                                {{ distribution|get_item:star_value }}
+                                            </div>
+                                        </div>
+                                        {% endwith %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <p class="mb-0">No ratings yet. This contractor will receive ratings after completing issues.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Recent Reviews -->
+                <div class="card shadow mt-4 animate__animated animate__fadeInRight animate__delay-1s">
+                    <div class="card-header">
+                        <h5 class="mb-0">Recent Reviews</h5>
+                    </div>
+                    
+                    <div class="card-body">
+                        {% if ratings %}
+                            <div class="reviews-list">
+                                {% for rating in ratings %}
+                                    <div class="review-item">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div class="d-flex align-items-center">
+                                                {% if rating.user.profile_picture %}
+                                                    <img src="{{ rating.user.profile_picture.url }}" class="rounded-circle profile-img-small mr-2" alt="{{ rating.user.username }}">
+                                                {% else %}
+                                                    <div class="profile-img-bg-small mr-2">
+                                                        <span class="text-white">{{ rating.user.username|first }}</span>
+                                                    </div>
+                                                {% endif %}
+                                                <div>
+                                                    <div class="font-weight-bold">{{ rating.user.username }}</div>
+                                                    <small class="text-muted">for Issue: <a href="{% url 'issue_detail' rating.issue.id %}">{{ rating.issue.title }}</a></small>
+                                                </div>
+                                            </div>
+                                            <div class="text-muted small">
+                                                {{ rating.created_at|date:"M d, Y" }}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="star-rating-left mb-2">
+                                            {% for i in '12345' %}
+                                                {% if forloop.counter <= rating.rating %}
+                                                    <i class="fas fa-star"></i>
+                                                {% else %}
+                                                    <i class="far fa-star"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        
+                                        {% if rating.comment %}
+                                            <p class="review-text mb-0">{{ rating.comment }}</p>
+                                        {% else %}
+                                            <p class="text-muted font-italic mb-0">No comment provided.</p>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <p class="mb-0">No reviews yet. Be the first to rate this contractor after they complete an issue!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Completed Issues -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow animate__animated animate__fadeInUp animate__delay-2s">
+                    <div class="card-header">
+                        <h5 class="mb-0">Completed Issues ({{ completed_issues.count }})</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if completed_issues %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Issue</th>
+                                            <th>Location</th>
+                                            <th>Reported By</th>
+                                            <th>Completed On</th>
+                                            <th>Rating</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for issue in completed_issues %}
+                                            <tr>
+                                                <td>
+                                                    <a href="{% url 'issue_detail' issue.id %}">{{ issue.title }}</a>
+                                                </td>
+                                                <td>{{ issue.location }}</td>
+                                                <td>{{ issue.reported_by.username }}</td>
+                                                <td>{{ issue.completed_at|date:"M d, Y" }}</td>
+                                                <td>
+                                                    {% with issue_rating=issue.ratings.first %}
+                                                        {% if issue_rating %}
+                                                            <div class="star-rating-left">
+                                                                {% for i in '12345' %}
+                                                                    {% if forloop.counter <= issue_rating.rating %}
+                                                                        <i class="fas fa-star"></i>
+                                                                    {% else %}
+                                                                        <i class="far fa-star"></i>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% else %}
+                                                            <span class="text-muted">No rating</span>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <p class="mb-0">This contractor hasn't completed any issues yet.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bars on load
+            setTimeout(function() {
+                const progressBars = document.querySelectorAll('.progress-bar');
+                progressBars.forEach(function(bar) {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(function() {
+                        bar.style.width = width;
+                    }, 300);
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>

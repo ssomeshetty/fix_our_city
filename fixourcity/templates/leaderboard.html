@@ -1,0 +1,899 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Contractor Leaderboard{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+     :root {
+            --primary-color: #4e54c8;
+            --secondary-color: #8c55f6;
+            --accent-color: #ff6b6b;
+            --success-color: #20c997;
+            --warning-color: #ffc107;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg,rgb(234, 176, 227) 0%,rgb(203, 159, 197) 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .floating-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .floating-bg div {
+            position: absolute;
+            display: block;
+            width: 40px;
+            height: 40px;
+            background: rgba(78, 84, 200, 0.1);
+            animation: animate 25s linear infinite;
+            bottom: -150px;
+            border-radius: 50%;
+        }
+        
+        .floating-bg div:nth-child(1) {
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+            background: rgba(255, 107, 107, 0.1);
+        }
+        
+        .floating-bg div:nth-child(2) {
+            left: 20%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 2s;
+            animation-duration: 25s;
+            background: rgba(140, 85, 246, 0.1);
+        }
+        
+        .floating-bg div:nth-child(3) {
+            left: 30%;
+            width: 70px;
+            height: 70px;
+            animation-delay: 4s;
+            animation-duration: 20s;
+            background: rgba(32, 201, 151, 0.1);
+        }
+        
+        .floating-bg div:nth-child(4) {
+            left: 40%;
+            width: 120px;
+            height: 120px;
+            animation-delay: 0s;
+            animation-duration: 15s;
+            background: rgba(255, 193, 7, 0.1);
+        }
+        
+        .floating-bg div:nth-child(5) {
+            left: 70%;
+            width: 90px;
+            height: 90px;
+            animation-delay: 3s;
+            animation-duration: 22s;
+            background: rgba(78, 84, 200, 0.1);
+        }
+        
+        .floating-bg div:nth-child(6) {
+            left: 50%;
+            width: 110px;
+            height: 110px;
+            animation-delay: 5s;
+            animation-duration: 19s;
+            background: rgba(23, 162, 184, 0.1);
+        }
+        
+        .floating-bg div:nth-child(7) {
+            left: 65%;
+            width: 75px;
+            height: 75px;
+            animation-delay: 1s;
+            animation-duration: 17s;
+            background: rgba(140, 85, 246, 0.1);
+        }
+        
+        .floating-bg div:nth-child(8) {
+            left: 85%;
+            width: 95px;
+            height: 95px;
+            animation-delay: 7s;
+            animation-duration: 21s;
+            background: rgba(255, 107, 107, 0.1);
+        }
+        
+        .floating-bg div:nth-child(9) {
+            left: 5%;
+            width: 65px;
+            height: 65px;
+            animation-delay: 6s;
+            animation-duration: 23s;
+            background: rgba(255, 193, 7, 0.1);
+        }
+        
+        .floating-bg div:nth-child(10) {
+            left: 60%;
+            width: 55px;
+            height: 55px;
+            animation-delay: 8s;
+            animation-duration: 16s;
+            background: rgba(32, 201, 151, 0.1);
+        }
+        
+        @keyframes animate {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1;
+        }
+        
+        h1 {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            color: #343a40;
+            max-width: 600px;
+            line-height: 1.6;
+            margin: 0 auto;
+        }
+        :root {
+            --primary-color: #4e54c8;
+            --secondary-color: #8c55f6;
+            --accent-color: #ff6b6b;
+            --success-color: #20c997;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+        
+        body {
+            background: linear-gradient(135deg,rgb(210, 163, 199) 0%, #e6eeff 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--dark-color);
+        }
+        
+        .main-content {
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .page-title {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.25rem;
+            border-bottom: none;
+        }
+        
+        .list-group-item {
+            border-left: none;
+            border-right: none;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .list-item-hover:hover {
+            background-color: rgba(78, 84, 200, 0.05);
+            transform: scale(1.01);
+        }
+        
+        .badge-warning {
+            background-color: var(--warning-color);
+            color: #212529;
+        }
+        
+        .badge-silver {
+            background: linear-gradient(135deg, #C0C0C0, #E8E8E8);
+            color: #212529;
+        }
+        
+        .badge-bronze {
+            background: linear-gradient(135deg, #CD7F32, #E8AC7A);
+            color: #212529;
+        }
+        
+        .profile-img {
+            border: 3px solid white;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .list-item-hover:hover .profile-img {
+            transform: scale(1.1);
+        }
+        
+        .progress {
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            transition: width 1.5s ease-in-out;
+        }
+        
+        .progress-1 {
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+        }
+        
+        .progress-2 {
+            background: linear-gradient(45deg, #a18cd1, #fbc2eb);
+        }
+        
+        .progress-3 {
+            background: linear-gradient(45deg, #84fab0, #8fd3f4);
+        }
+        
+        .progress-4 {
+            background: linear-gradient(45deg, #ffecd2, #fcb69f);
+        }
+        
+        .progress-5 {
+            background: linear-gradient(45deg, #ff8e53, #fe6b8b);
+        }
+        
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            gap: 3px;
+            margin-top: 5px;
+        }
+        
+        .star-rating i {
+            font-size: 1rem;
+        }
+        
+        .star-pulse {
+            animation: star-pulse 1.5s infinite;
+        }
+        
+        @keyframes star-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .pulse-light {
+            animation: pulse-light 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+        }
+        
+        @keyframes pulse-light {
+            0% { box-shadow: 0 0 0 0 rgba(200, 200, 200, 0.7); }
+            70% { box-shadow: 0 0 0 7px rgba(200, 200, 200, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(200, 200, 200, 0); }
+        }
+        
+        .expertise-badge {
+            background: linear-gradient(135deg, rgba(78, 84, 200, 0.1), rgba(140, 85, 246, 0.1));
+            border-radius: 20px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            color: var(--primary-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .expertise-badge:hover {
+            background: linear-gradient(135deg, rgba(78, 84, 200, 0.2), rgba(140, 85, 246, 0.2));
+            transform: translateY(-2px);
+        }
+        
+        .ratings-container {
+            transition: all 0.3s ease;
+        }
+        
+        .rating-row {
+            transition: transform 0.3s ease;
+        }
+        
+        .rating-row:hover {
+            transform: translateX(5px);
+        }
+        
+        .floating-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .floating-bg div {
+            position: absolute;
+            display: block;
+            width: 40px;
+            height: 40px;
+            background: rgba(78, 84, 200, 0.1);
+            animation: animate 25s linear infinite;
+            bottom: -150px;
+            border-radius: 50%;
+        }
+        
+        .floating-bg div:nth-child(1) {
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+            background: rgba(255, 107, 107, 0.1);
+        }
+        
+        .floating-bg div:nth-child(2) {
+            left: 20%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 2s;
+            animation-duration: 25s;
+            background: rgba(140, 85, 246, 0.1);
+        }
+        
+        .floating-bg div:nth-child(3) {
+            left: 30%;
+            width: 70px;
+            height: 70px;
+            animation-delay: 4s;
+            animation-duration: 20s;
+            background: rgba(32, 201, 151, 0.1);
+        }
+        
+        .floating-bg div:nth-child(4) {
+            left: 40%;
+            width: 120px;
+            height: 120px;
+            animation-delay: 0s;
+            animation-duration: 15s;
+            background: rgba(255, 193, 7, 0.1);
+        }
+        
+        .floating-bg div:nth-child(5) {
+            left: 70%;
+            width: 90px;
+            height: 90px;
+            animation-delay: 3s;
+            animation-duration: 22s;
+            background: rgba(78, 84, 200, 0.1);
+        }
+        
+        @keyframes animate {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        .bounce-in {
+            animation: bounce-in 1s ease;
+        }
+        
+        @keyframes bounce-in {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); opacity: 1; }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+        
+        .slide-in-right {
+            animation: slide-in-right 0.5s ease;
+        }
+        
+        @keyframes slide-in-right {
+            0% { transform: translateX(100px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        
+        .completed-issues {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .completed-issues::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--success-color);
+            animation: pulse-success 2s infinite;
+        }
+        
+        @keyframes pulse-success {
+            0% { box-shadow: 0 0 0 0 rgba(32, 201, 151, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(32, 201, 151, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(32, 201, 151, 0); }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 767px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .card {
+                border-radius: 10px;
+            }
+            
+            .list-group-item {
+                padding: 1rem 0.75rem;
+            }
+            
+            .star-rating i {
+                font-size: 0.8rem;
+            }
+            
+            .progress {
+                height: 6px;
+            }
+            
+            .mobile-stats {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 0.75rem;
+                padding-top: 0.75rem;
+                border-top: 1px solid rgba(0,0,0,0.1);
+            }
+            
+            .mobile-rating-badge {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                color: white;
+                font-weight: bold;
+                font-size: 1rem;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="floating-bg">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <div class="main-content position-relative">
+        <div class="container py-4">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="text-center mb-5 animate__animated animate__fadeIn">
+                        <h1 class="page-title display-4 mb-3 animate__animated animate__bounce">
+                            <i class="fas fa-trophy text-warning me-2 animate__animated animate__tada animate__delay-1s"></i>Contractor Leaderboard
+                        </h1>
+                        <p class="lead text-muted animate__animated animate__fadeInUp animate__delay-1s">
+                            <i class="fas fa-star text-warning me-2"></i>Ranked by public ratings for completed projects
+                            <i class="fas fa-star text-warning ms-2"></i>
+                        </p>
+                        <div class="d-flex justify-content-center gap-2 mt-3 animate__animated animate__fadeInUp animate__delay-2s">
+                            <span class="badge bg-warning text-dark">
+                                <i class="fas fa-crown me-1"></i>Top Performers
+                            </span>
+                            <span class="badge bg-info text-white">
+                                <i class="fas fa-chart-line me-1"></i>Latest Rankings
+                            </span>
+                            <span class="badge bg-success text-white">
+                                <i class="fas fa-sync-alt me-1"></i>Updated Daily
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if ranked_contractors %}
+                <div class="card shadow-lg rounded-lg border-0 animate__animated animate__fadeInUp animate__delay-2s">
+                    <div class="card-header bg-gradient-primary text-white">
+                        <div class="row font-weight-bold d-none d-md-flex">
+                            <div class="col-md-1 text-center">
+                                <i class="fas fa-medal me-1"></i>Rank
+                            </div>
+                            <div class="col-md-3">
+                                <i class="fas fa-user-tie me-1"></i>Contractor
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <i class="fas fa-star me-1"></i>Rating
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-chart-bar me-1"></i>Rating Distribution
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <i class="fas fa-check-circle me-1"></i>Completed
+                            </div>
+                        </div>
+                        <div class="d-md-none text-center">
+                            <i class="fas fa-award me-2 animate__animated animate__swing"></i>
+                            <span class="fw-bold">Top Rated Contractors</span>
+                            <i class="fas fa-award ms-2 animate__animated animate__swing animate__delay-1s"></i>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            {% for entry in ranked_contractors %}
+                            <li class="list-group-item list-item-hover animate__animated animate__fadeIn" style="animation-delay: {{ forloop.counter0|multiply:0.15 }}s">
+                                <div class="row align-items-center">
+                                    <!-- Rank -->
+                                    <div class="col-3 col-md-1 text-center">
+                                        {% if entry.rank <= 3 %}
+                                            <span class="badge position-relative 
+                                                {% if entry.rank == 1 %}bg-warning pulse
+                                                {% elif entry.rank == 2 %}badge-silver pulse-light
+                                                {% else %}badge-bronze pulse-light{% endif %} p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px; border-radius: 50%;">
+                                                {% if entry.rank == 1 %}
+                                                    <i class="fas fa-crown bounce-in"></i>
+                                                {% elif entry.rank == 2 %}
+                                                    <i class="fas fa-medal bounce-in"></i>
+                                                {% else %}
+                                                    <i class="fas fa-award bounce-in"></i>
+                                                {% endif %}
+                                            </span>
+                                            {% if entry.rank == 1 %}
+                                            <div class="position-absolute" style="top: -5px; right: 0;">
+                                                <i class="fas fa-fire text-danger animate__animated animate__heartBeat animate__infinite"></i>
+                                            </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge bg-light text-dark">{{ entry.rank }}</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Contractor -->
+                                    <div class="col-9 col-md-3 mb-2 mb-md-0">
+                                        <a href="{% url 'contractor_detail' entry.contractor.id %}" class="text-decoration-none">
+                                            <div class="d-flex align-items-center">
+                                                <div class="position-relative">
+                                                    {% if entry.contractor.user.profile_picture %}
+                                                        <img src="{{ entry.contractor.user.profile_picture.url }}" 
+                                                             class="rounded-circle me-2 profile-img" 
+                                                             width="50" 
+                                                             height="50" 
+                                                             alt="{{ entry.contractor.name }}">
+                                                    {% else %}
+                                                        <div class="rounded-circle me-2 d-flex align-items-center justify-content-center profile-img" 
+                                                             style="width: 50px; height: 50px; background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));">
+                                                            <span class="text-white fs-4">{{ entry.contractor.name|first }}</span>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if entry.rank <= 3 %}
+                                                    <div class="position-absolute" style="bottom: -5px; right: 10px;">
+                                                        {% if entry.rank == 1 %}
+                                                            <i class="fas fa-certificate text-warning"></i>
+                                                        {% elif entry.rank == 2 %}
+                                                            <i class="fas fa-certificate text-secondary"></i>
+                                                        {% else %}
+                                                            <i class="fas fa-certificate" style="color: #CD7F32;"></i>
+                                                        {% endif %}
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold text-primary">{{ entry.contractor.name }}</div>
+                                                    <div class="expertise-badge">
+                                                        <i class="fas fa-tools"></i>
+                                                        {{ entry.contractor.expertise }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- Rating -->
+                                    <div class="col-6 col-md-2 text-center mb-2 mb-md-0">
+                                        <div class="h4 mb-0 text-primary">{{ entry.avg_rating|floatformat:1 }}</div>
+                                        <div class="small text-muted">
+                                            <i class="fas fa-users me-1"></i>{{ entry.num_ratings }} rating{{ entry.num_ratings|pluralize }}
+                                        </div>
+                                        <div class="star-rating">
+                                            {% with entry.avg_rating|floatformat:1 as avg_rating %}
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= avg_rating %}
+                                                    <i class="fas fa-star text-warning {% if entry.rank <= 3 %}star-pulse{% endif %}"></i>
+                                                {% else %}
+                                                    {% if forloop.counter|add:-0.5 <= avg_rating %}
+                                                        <i class="fas fa-star-half-alt text-warning"></i>
+                                                    {% else %}
+                                                        <i class="far fa-star text-muted"></i>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% endwith %}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Rating Distribution -->
+                                    <div class="col-6 col-md-4 mb-2 mb-md-0">
+                                        <div class="ratings-container">
+                                            {% for star, percentage in entry.distribution_percentage.items %}
+                                            <div class="rating-row d-flex align-items-center small mb-1">
+                                                <div class="me-2">
+                                                    <span class="badge bg-light text-dark">{{ star }}</span>
+                                                    <i class="fas fa-star text-warning"></i>
+                                                </div>
+                                                <div class="progress flex-grow-1 bg-light">
+                                                    <div class="progress-bar progress-{{ star }} progress-animate" 
+                                                         role="progressbar" 
+                                                         style="width: 0%;" 
+                                                         data-width="{{ percentage }}"
+                                                         aria-valuenow="{{ percentage }}" 
+                                                         aria-valuemin="0" 
+                                                         aria-valuemax="100"></div>
+                                                </div>
+                                                <div class="ms-2 text-muted d-none d-md-block">
+                                                    <span class="badge bg-light text-dark">{{ entry.distribution|get_item:star }}</span>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Completed Issues -->
+                                    <div class="col-12 col-md-2 text-center mt-2 mt-md-0">
+                                        <div class="h5 mb-0 text-success completed-issues">
+                                            <i class="fas fa-tasks me-1"></i>
+                                            <span class="counter" data-target="{{ entry.num_completed }}">0</span>
+                                        </div>
+                                        <small class="text-muted">issue{{ entry.num_completed|pluralize }} completed</small>
+                                    </div>
+                                    
+                                    <!-- Mobile Stats Row -->
+                                    <div class="col-12 d-md-none">
+                                        <div class="mobile-stats">
+                                            <div class="text-center">
+                                                <div class="mobile-rating-badge">
+                                                    {{ entry.avg_rating|floatformat:1 }}
+                                                </div>
+                                                <small class="text-muted d-block mt-1">Rating</small>
+                                            </div>
+                                            <div class="text-center">
+                                                <div class="d-flex justify-content-center">
+                                                    {% with entry.avg_rating|floatformat:1 as avg_rating %}
+                                                    {% for i in "12345" %}
+                                                        {% if forloop.counter <= avg_rating %}
+                                                            <i class="fas fa-star text-warning"></i>
+                                                        {% else %}
+                                                            {% if forloop.counter|add:-0.5 <= avg_rating %}
+                                                                <i class="fas fa-star-half-alt text-warning"></i>
+                                                            {% else %}
+                                                                <i class="far fa-star text-muted"></i>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% endwith %}
+                                                </div>
+                                                <small class="text-muted d-block mt-1">Stars</small>
+                                            </div>
+                                            <div class="text-center">
+                                                <div class="badge bg-success">
+                                                    <i class="fas fa-check-circle me-1"></i>{{ entry.num_completed }}
+                                                </div>
+                                                <small class="text-muted d-block mt-1">Completed</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-light p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-info-circle text-primary me-1"></i>
+                                <small class="text-muted">Rankings updated daily</small>
+                            </div>
+                            <div>
+                                <i class="fas fa-filter text-primary me-1"></i>
+                                <small class="text-muted">Based on public ratings</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-info shadow-sm animate__animated animate__fadeIn p-4 d-flex align-items-center">
+                    <div class="me-3 fs-3 text-info">
+                        <i class="fas fa-info-circle fa-pulse"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-1">No Rated Contractors Yet</h5>
+                        <p class="mb-0">Contractors will appear here after they complete issues and receive ratings. Check back soon!</p>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div class="text-center mt-4 animate__animated animate__fadeIn animate__delay-3s">
+                <a href="#" class="btn btn-outline-primary rounded-pill">
+                    <i class="fas fa-sync-alt me-1"></i> Refresh Rankings
+                </a>
+                <a href="{% url 'login' %}" class="btn btn-outline-success rounded-pill ms-2">
+                    <i class="fas fa-user-plus me-1"></i> Become a Contractor
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bars
+            setTimeout(function() {
+                const progressBars = document.querySelectorAll('.progress-animate');
+                progressBars.forEach(function(bar) {
+                    const width = bar.getAttribute('data-width') + '%';
+                    bar.style.width = width;
+                });
+            }, 500);
+            
+            // Counter animation
+            const counters = document.querySelectorAll('.counter');
+            const speed = 200;
+            
+            counters.forEach(counter => {
+                const animate = () => {
+                    const value = +counter.getAttribute('data-target');
+                    const data = +counter.innerText;
+                    const time = value / speed;
+                    
+                    if (data < value) {
+                        counter.innerText = Math.ceil(data + time);
+                        setTimeout(animate, 20);
+                    } else {
+                        counter.innerText = value;
+                    }
+                }
+                
+                animate();
+            });
+            
+            // Add scroll animation
+            const items = document.querySelectorAll('.list-group-item');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate__fadeInRight');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            items.forEach(item => {
+                observer.observe(item);
+            });
+            
+            // Add hover effects
+            const stars = document.querySelectorAll('.star-rating i');
+            stars.forEach(star => {
+                star.addEventListener('mouseover', function() {
+                    this.classList.add('animate__animated', 'animate__rubberBand');
+                });
+                star.addEventListener('animationend', function() {
+                    this.classList.remove('animate__animated', 'animate__rubberBand');
+                });
+            });
+        });
+        // Add more bubble elements dynamically
+        document.addEventListener('DOMContentLoaded', function() {
+            const floatingBg = document.querySelector('.floating-bg');
+            
+            // Add 15 more bubbles
+            for (let i = 0; i < 15; i++) {
+                const bubble = document.createElement('div');
+                
+                // Random properties
+                const size = Math.random() * 100 + 20;
+                const left = Math.random() * 100;
+                const delay = Math.random() * 10;
+                const duration = Math.random() * 10 + 15;
+                
+                // Random color
+                const colors = [
+                    'rgba(78, 84, 200, 0.1)',
+                    'rgba(140, 85, 246, 0.1)',
+                    'rgba(255, 107, 107, 0.1)',
+                    'rgba(32, 201, 151, 0.1)',
+                    'rgba(255, 193, 7, 0.1)',
+                    'rgba(23, 162, 184, 0.1)'
+                ];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Apply styles
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${left}%`;
+                bubble.style.animationDelay = `${delay}s`;
+                bubble.style.animationDuration = `${duration}s`;
+                bubble.style.background = color;
+                
+                floatingBg.appendChild(bubble);
+            }
+        });
+    </script>
+</body>
+</html>
