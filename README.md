@@ -37,87 +37,78 @@ FixOurCity is a web-based platform that empowers citizens to report, track, and 
 ## 💻 Technology Stack
 
 - **Frontend**: HTML, CSS, JavaScript, Bootstrap
-- **Backend**: [Your backend technology - e.g., Django, Flask, Node.js]
-- **Database**: [Your database - e.g., PostgreSQL, MongoDB]
-- **Authentication**: [Your auth system - e.g., JWT, OAuth]
-- **Cloud Services**: [If applicable - e.g., AWS, Azure, Google Cloud]
-- **Maps Integration**: [Your maps API - e.g., Google Maps, Mapbox]
+- **Backend**: Django
+- **Database**: SQLite
+- **Authentication**: Django Authentication System
+- **Template Engine**: Django Templates
+- **Maps Integration**: Google Maps API (Work in Progress)
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- [List prerequisite software, like Node.js, Python, etc.]
-- [Database requirements]
+- Python 3.8 or higher
+- pip (Python package manager)
+- virtualenv (recommended)
+- SQLite
 
 ### Installation
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/yourusername/fixourcity.git
+   git clone https://github.com/ssomeshetty/fixourcity.git
    cd fixourcity
    ```
 
-2. Install dependencies
+2. Create and activate a virtual environment
    ```bash
-   # If using Python/Django
-   pip install -r requirements.txt
+   # Create virtual environment
+   python -m venv venv
    
-   # If using Node.js
-   npm install
+   # Activate virtual environment
+   # On Windows
+   venv\Scripts\activate
+   
+   # On macOS/Linux
+   source venv/bin/activate
    ```
 
-3. Set up environment variables
+3. Install dependencies
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Set up environment variables
    ```bash
    cp .env.example .env
-   # Edit .env with your configuration
+   # Edit .env with your configuration for database, secret key, etc.
    ```
 
-4. Initialize the database
+5. Initialize the database
    ```bash
-   # Django example
+   python manage.py makemigrations
    python manage.py migrate
-   
-   # OR other framework commands
    ```
 
-5. Start the development server
+6. Create a superuser (admin)
    ```bash
-   # Django example
-   python manage.py runserver
-   
-   # Node.js example
-   npm run dev
+   python manage.py createsuperuser
    ```
 
-## 🧪 Testing
+7. Collect static files
+   ```bash
+   python manage.py collectstatic
+   ```
 
-```bash
-# Run tests
-python manage.py test
+8. Start the development server
+   ```bash
+   python manage.py runserver
+   ```
 
-# OR
-npm test
-```
+9. Access the site
+   - Main site: http://127.0.0.1:8000/
+   - Admin panel: http://127.0.0.1:8000/admin/
 
-## 📸 Screenshots
-
-<div align="center">
-  <img src="path-to-screenshot1.png" alt="Dashboard" width="400"/>
-  <img src="path-to-screenshot2.png" alt="Issue Reporting" width="400"/>
-</div>
-
-## 🛣️ Roadmap
-
-- Mobile application development
-- Automated issue detection using AI
-- Integration with city emergency services
-- Advanced analytics for infrastructure planning
-- Crowdfunding features for community-driven projects
-
-## 👥 Contributing
-
-We welcome contributions to FixOurCity! Please check out our [Contributing Guidelines](CONTRIBUTING.md) to get started.
 
 ## 📄 License
 
@@ -125,12 +116,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 📞 Contact
 
-- Website: [your-website.com](https://your-website.com)
-- Email: contact@fixourcity.com
-- Twitter: [@fixourcity](https://twitter.com/fixourcity)
-
-## 🙏 Acknowledgements
-
-- [List any libraries, tools, or resources you want to acknowledge]
-- [Any contributors or mentors]
-- [Inspiration sources]
+- Email: bremblue189@gmail.com
