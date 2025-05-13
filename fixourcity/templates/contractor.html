@@ -309,10 +309,8 @@
                             <h3 class="issue-title">{{ issue.title }}</h3>
                             <p>{{ issue.description|truncatewords:30 }}</p>
                             <div class="issue-meta">
-                                <span class="location-badge">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    {{ issue.location }}
-                                </span>
+                                <span><i class="fas fa-map-marker-alt me-2"></i>{{ issue.address }}</span>
+
                                 <span class="status-badge">
                                     Status: {{ issue.status }}
                                 </span>
@@ -354,10 +352,7 @@
                             <h3 class="issue-title h6 font-weight-semibold">{{ issue.title }}</h3>
                             <p>{{ issue.description|truncatewords:30 }}</p>
                             <div class="issue-meta">
-                                <span class="location-badge">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    {{ issue.location }}
-                                </span>
+                                <span><i class="fas fa-map-marker-alt me-2"></i>{{ issue.address }}</span>
                                 <span class="status-badge">
                                     <strong>Completed on:</strong> {{ issue.updated_at|date }}
                                 </span>
@@ -388,10 +383,7 @@
                                 <h3 class="issue-title h6 font-weight-semibold">{{ issue.title }}</h3>
                                 <p>{{ issue.description|truncatewords:30 }}</p>
                                 <div class="issue-meta">
-                                    <span class="location-badge">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        {{ issue.location }}
-                                    </span>
+                                    <span><i class="fas fa-map-marker-alt me-2"></i>{{ issue.address }}</span>
                                     <span class="status-badge">
                                         <strong>Status:</strong> {{ issue.status }}
                                     </span>

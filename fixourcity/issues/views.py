@@ -6,18 +6,17 @@ from django.contrib import messages
 from django.http import JsonResponse
 from .models import Issue, IssueUpvote, IssueImage, Comment
 from .forms import IssueForm, CommentForm, IssueImageForm
+from django.conf import settings  # Add this at the top with other imports
 
 @login_required
 def create_issue(request):
     if request.method == 'POST':
         form = IssueForm(request.POST, request.FILES)
         if form.is_valid():
-            # Save the issue object first
             issue = form.save(commit=False)
             issue.reported_by = request.user
             issue.save()
 
-            # If the user uploaded an image, associate it with the issue
             if 'image' in request.FILES:
                 image = request.FILES['image']
                 IssueImage.objects.create(
@@ -31,7 +30,10 @@ def create_issue(request):
     else:
         form = IssueForm()
 
-    return render(request, 'create_issue.html', {'form': form})
+    return render(request, 'create_issue.html', {
+        'form': form,
+    })
+
 
 def view_issues(request):
     new_issues = Issue.objects.filter(upvotes_count__lt=50, status='new')
@@ -212,3 +214,28 @@ def rate_contractor(request, issue_id):
         'form': form,
         'existing_rating': existing_rating,
     })
+
+# issues/views.py
+
+from django.shortcuts import get_object_or_404, redirect
+from .models import Issue, Comment
+from .forms import CommentForm
+from django.contrib import messages
+
+@login_required
+def add_comment(request, issue_id):
+    issue = get_object_or_404(Issue, id=issue_id)
+    
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.issue = issue
+            comment.user = request.user
+            comment.save()
+            messages.success(request, 'Comment added successfully!')
+            return redirect('issue_detail', issue_id=issue.id)
+    else:
+        comment_form = CommentForm()
+    
+    return redirect('issue_detail', issue_id=issue.id)

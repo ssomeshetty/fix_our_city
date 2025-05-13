@@ -6,6 +6,7 @@
     <title>Report Issue - FixOurCity</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <style>
         /* Global Styles */
         body {
@@ -78,6 +79,46 @@
         /* Button Hover Effect */
         .btn:hover {
             background-color: #0056b3; /* Darken on hover */
+        }
+
+        /* Map container */
+        #map {
+            height: 300px;
+            width: 100%;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        /* Location search results */
+        #location-results {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .location-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .location-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Current location button */
+        #get-current-location {
+            display: inline-block;
+            margin-bottom: 10px;
+            background-color: #28a745;
+        }
+
+        #get-current-location:hover {
+            background-color: #218838;
         }
 
         /* Responsive Styles */
@@ -153,29 +194,231 @@
         <h2 class="card-title">Report New Issue</h2>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {% for field in form %}
-                <div class="form-group">
-                    <label class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                        <div class="message message-error">
-                            {{ field.errors }}
-                        </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-
+            
+            <!-- Title and Description -->
+            <div class="form-group">
+                <label class="form-label">{{ form.title.label }}</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <div class="message message-error">
+                        {{ form.title.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">{{ form.description.label }}</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="message message-error">
+                        {{ form.description.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Location Section -->
+            <div class="form-group">
+                <label class="form-label">Location</label>
+                <button type="button" id="get-current-location" class="btn btn-sm mb-2">
+                    <i class="fas fa-map-marker-alt me-1"></i>Use My Current Location
+                </button>
+                
+                <input type="text" id="location-search" class="form-control" placeholder="Search for a location" autocomplete="off">
+                <div id="location-results"></div>
+                
+                <!-- Map for selecting location -->
+                <div id="map"></div>
+                
+                <!-- Hidden fields that will be submitted with the form -->
+                <input type="hidden" name="address" id="address-field" value="{{ form.address.value|default:'' }}">
+                <input type="hidden" name="latitude" id="latitude-field" value="{{ form.latitude.value|default:'' }}">
+                <input type="hidden" name="longitude" id="longitude-field" value="{{ form.longitude.value|default:'' }}">
+                <input type="hidden" name="location" id="location-json-field" value="">
+                
+                {% if form.address.errors or form.latitude.errors or form.longitude.errors %}
+                    <div class="message message-error">
+                        Please select a valid location
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label class="form-label">{{ form.title.label }}</label>
+                {{ form.government_authority }}
+                {% if form.title.errors %}
+                    <div class="message message-error">
+                        {{ form.title.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
             <!-- Image field -->
             <div class="form-group">
                 <label for="image">Upload Image</label>
-                <input type="file" name="image" accept="image/*">
+                <input type="file" name="image" accept="image/*" class="form-control">
             </div>
 
             <button type="submit" class="btn">Submit Issue</button>
         </form>
     </div>
 
-    <!-- Bootstrap JS -->
+    <!-- JS Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize map with default center (can be changed to your city's coordinates)
+            const map = L.map('map').setView([40.7128, -74.0060], 13);
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // Initialize marker variable
+            let marker;
+            
+            // Function to update form fields with location data
+            function updateLocationFields(lat, lng, displayName, fullData = {}) {
+                document.getElementById('latitude-field').value = lat;
+                document.getElementById('longitude-field').value = lng;
+                document.getElementById('address-field').value = displayName;
+                
+                // Store complete location data as JSON
+                const locationData = {
+                    latitude: lat,
+                    longitude: lng,
+                    address: displayName,
+                    ...fullData
+                };
+                document.getElementById('location-json-field').value = JSON.stringify(locationData);
+                
+                // Update or create marker
+                if (marker) {
+                    marker.setLatLng([lat, lng]);
+                } else {
+                    marker = L.marker([lat, lng]).addTo(map);
+                }
+                
+                // Center map on marker
+                map.setView([lat, lng], 16);
+            }
+            
+            // Handle map clicks to set location
+            map.on('click', function(e) {
+                const lat = e.latlng.lat;
+                const lng = e.latlng.lng;
+                
+                // Reverse geocode to get address
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.display_name) {
+                            updateLocationFields(lat, lng, data.display_name, data);
+                        }
+                    })
+                    .catch(error => console.error('Error reverse geocoding:', error));
+            });
+            
+            // Location search functionality
+            const searchInput = document.getElementById('location-search');
+            const resultsContainer = document.getElementById('location-results');
+            
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                if (query.length < 3) {
+                    resultsContainer.style.display = 'none';
+                    return;
+                }
+                
+                // Search using Nominatim
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`)
+                    .then(response => response.json())
+                    .then(data => {
+                        resultsContainer.innerHTML = '';
+                        
+                        if (data && data.length > 0) {
+                            data.forEach(item => {
+                                const resultItem = document.createElement('div');
+                                resultItem.className = 'location-item';
+                                resultItem.textContent = item.display_name;
+                                resultItem.addEventListener('click', function() {
+                                    updateLocationFields(
+                                        parseFloat(item.lat), 
+                                        parseFloat(item.lon), 
+                                        item.display_name,
+                                        item
+                                    );
+                                    searchInput.value = item.display_name;
+                                    resultsContainer.style.display = 'none';
+                                });
+                                resultsContainer.appendChild(resultItem);
+                            });
+                            resultsContainer.style.display = 'block';
+                        } else {
+                            resultsContainer.style.display = 'none';
+                        }
+                    })
+                    .catch(error => console.error('Error searching locations:', error));
+            });
+            
+            // Handle "Use My Current Location" button
+            document.getElementById('get-current-location').addEventListener('click', function() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            const lat = position.coords.latitude;
+                            const lng = position.coords.longitude;
+                            
+                            // Reverse geocode to get address
+                            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data && data.display_name) {
+                                        updateLocationFields(lat, lng, data.display_name, data);
+                                        searchInput.value = data.display_name;
+                                    }
+                                })
+                                .catch(error => console.error('Error reverse geocoding:', error));
+                        },
+                        function(error) {
+                            alert('Error getting your location: ' + error.message);
+                        }
+                    );
+                } else {
+                    alert('Geolocation is not supported by your browser');
+                }
+            });
+            
+            // Close search results when clicking outside
+            document.addEventListener('click', function(e) {
+                if (e.target !== searchInput && e.target !== resultsContainer) {
+                    resultsContainer.style.display = 'none';
+                }
+            });
+            
+            // Try to get user's location on page load to center the map
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        map.setView([position.coords.latitude, position.coords.longitude], 13);
+                    },
+                    function(error) {
+                        console.log('Error getting initial location:', error.message);
+                    }
+                );
+            }
+            
+            // If we have pre-filled values (for edit form), use them
+            const lat = document.getElementById('latitude-field').value;
+            const lng = document.getElementById('longitude-field').value;
+            const address = document.getElementById('address-field').value;
+            
+            if (lat && lng && address) {
+                updateLocationFields(parseFloat(lat), parseFloat(lng), address);
+                searchInput.value = address;
+            }
+        });
+    </script>
 </body>
 </html>

@@ -10,6 +10,8 @@ urlpatterns = [
     path('upload-image/<int:issue_id>/', views.upload_issue_image, name='upload_issue_image'),
     path('upvote/<int:issue_id>/', views.upvote_issue, name='upvote_issue'),
     path('issues/<int:issue_id>/rate/', views.rate_contractor, name='rate_contractor'),
+    path('issues/<int:issue_id>/add_comment/', views.add_comment, name='add_comment'),
+
 
     
 ]

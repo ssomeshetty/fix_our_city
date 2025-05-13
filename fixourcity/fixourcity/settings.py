@@ -149,3 +149,7 @@ CSRF_COOKIE_SECURE = False  #set to false in development mode
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = True
 # CSRF_COOKIE_NAME = "csrftoken"
+
+# settings.py
+
+GEOCODING_API_KEY = "f04e47ff243d427aa30e86b50303adde"

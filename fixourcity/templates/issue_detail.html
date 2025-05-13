@@ -1,55 +1,63 @@
-{% load custom_filters %}
-
+{% load customfilters %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <title>{{ issue.title }} - FixOurCity</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <style>
-        :root {
+        /* Keep all the original CSS styles here */
+        /* ... (original CSS styles from the first template) ... */
+         :root {
             --primary: #4a148c;
             --primary-light: #7c43bd;
             --primary-dark: #12005e;
             --secondary: #ff4081;
             --secondary-light: #ff79b0;
             --secondary-dark: #c60055;
+            --success: #00c853;
+            --warning: #ffd600;
+            --danger: #d50000;
+            --info: #00b0ff;
+            --neutral: #f5f5f5;
+            --neutral-dark: #e0e0e0;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-light: #999999;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            background: #f8f9fa;
             min-height: 100vh;
-            padding-top: 76px;
-        }
-
-         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-            min-height: 100vh;
+            color: var(--text-primary);
         }
 
         /* Navbar Styles */
         .navbar {
-            background-color: #4a148c;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
 
         .navbar-brand {
             font-weight: 700;
             color: white !important;
-            padding-left:55px;
+            transition: all 0.3s ease;
         }
 
-        #navbarNav{
-            padding-right : 55px
+        .navbar-brand:hover {
+            transform: scale(1.05);
         }
 
         .nav-link {
-            color: rgba(255, 255, 255, 0.9) !important;
+            color: rgba(255,255,255,0.9) !important;
             transition: all 0.3s ease;
         }
 
@@ -58,338 +66,574 @@
             transform: translateY(-2px);
         }
 
-        .navbar-toggler-icon {
-            color: white;
+        /* Main Content */
+        .main-container {
+            padding: 1rem;
+            margin-top: 76px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .issue-container {
+        /* Issue Detail Card */
+        .issue-detail-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 992px) {
+            .issue-detail-container {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        /* Main Issue Card */
+        .issue-main-card {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            padding: 2rem;
-            margin: 2rem auto;
-            max-width: 800px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .issue-main-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+
+        .issue-header {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            height: 250px;
+            background-color: var(--primary-light);
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        
+        .issue-header:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%);
+            z-index: 1;
+        }
+
+        .issue-header-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 2rem 1.5rem 1rem;
+            color: white;
+            z-index: 2;
             transition: all 0.3s ease;
         }
-
-        .user-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #eee;
-        }
-
-        .profile-image {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 1rem;
-            object-fit: cover;
-        }
-
-        .user-info {
-            flex-grow: 1;
-        }
-
-        .username {
-            color: var(--primary);
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .post-time {
-            color: #777;
-            font-size: 0.9rem;
+        
+        .issue-main-card:hover .issue-header-overlay {
+            padding-bottom: 1.5rem;
         }
 
         .issue-title {
-            color: var(--primary);
-            font-size: 1.75rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .issue-details p {
-            color: #444;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-        }
-
-        .issue-metadata {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1rem;
-            margin: 1rem 0;
-        }
-
-        .metadata-item {
-            display: flex;
-            align-items: center;
             margin-bottom: 0.5rem;
-            color: #555;
-        }
-
-        .metadata-item i {
-            color: var(--primary);
-            margin-right: 0.5rem;
-            width: 20px;
-        }
-
-        .upvote-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .upvote-btn {
-            background: var(--secondary);
             color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        }
+
+        .issue-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .issue-meta-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 8px;
         }
 
-        .upvote-btn:hover {
-            background: var(--secondary-dark);
-            transform: translateY(-2px);
+        .issue-status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 1rem;
         }
 
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
+        .status-new {
+            background-color: var(--info);
+            color: white;
+        }
+
+        .status-pending {
+            background-color: var(--warning);
+            color: #333;
+        }
+
+        .status-completed {
+            background-color: var(--success);
+            color: white;
+        }
+
+        /* Issue Content */
+        .issue-body {
+            padding: 1.5rem;
+        }
+
+        .issue-description {
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        /* Issue Media */
+        .issue-media {
             margin: 1.5rem 0;
-        }
-
-        .image-card {
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        .image-card img {
+        .issue-media img {
             width: 100%;
-            height: 200px;
-            object-fit: cover;
+            transition: all 0.4s ease;
         }
 
-        .image-caption {
-            padding: 0.5rem;
-            background: #f8f9fa;
-            font-size: 0.9rem;
-            color: #666;
+        .issue-media img:hover {
+            transform: scale(1.03);
         }
 
-        .comments-section {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #eee;
-        }
-
-        .comment-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .comment-meta {
-            color: #777;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
-
-        .comment-form {
+        /* Actions Section */
+        .issue-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--neutral);
+            padding-top: 1.5rem;
             margin-top: 1.5rem;
         }
 
-        .comment-form textarea {
-            border-radius: 10px;
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .submit-btn {
-            background: var(--primary);
-            color: white;
+        .action-btn {
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            cursor: pointer;
+            background: transparent;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 30px;
             transition: all 0.3s ease;
-            margin-top: 1rem;
+            font-weight: 500;
         }
 
-        .submit-btn:hover {
-            background: var(--primary-dark);
+        .action-btn:hover {
+            background-color: var(--neutral);
             transform: translateY(-2px);
         }
 
-        @media (max-width: 768px) {
-            .issue-container {
-                margin: 1rem;
-                padding: 1.5rem;
-            }
+        .upvote-btn:hover, .upvote-btn.active {
+            background-color: rgba(255, 64, 129, 0.1);
+            color: var(--secondary);
+        }
 
+        .share-btn:hover {
+            background-color: rgba(0, 176, 255, 0.1);
+            color: var(--info);
+        }
+
+        .report-btn:hover {
+            background-color: rgba(213, 0, 0, 0.1);
+            color: var(--danger);
+        }
+
+        /* Info Cards */
+        .info-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .info-card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-card-title i {
+            color: var(--secondary);
+        }
+
+        /* Location Info */
+        .location-map {
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 1rem;
+            height: 200px;
+            background-color: var(--neutral);
+            position: relative;
+        }
+
+        .map-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-item {
+            padding: 1rem;
+            background-color: var(--neutral);
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-3px);
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            margin-top: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 3px;
+            background: var(--primary-light);
+            border-radius: 3px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 8px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--secondary);
+            border: 2px solid white;
+        }
+
+        .timeline-date {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-content {
+            font-size: 0.95rem;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            margin-top: 2rem;
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .comments-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .comment-card {
+            border-bottom: 1px solid var(--neutral);
+            padding: 1.2rem 0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .comment-card:hover {
+            background-color: rgba(0,0,0,0.01);
+        }
+        
+        .comment-card:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, var(--primary-light), var(--secondary));
+            transition: width 0.4s ease;
+        }
+        
+        .comment-card:hover:after {
+            width: 100%;
+        }
+
+        .comment-card:last-child {
+            border-bottom: none;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            margin-right: 0.8rem;
+        }
+
+        .comment-user {
+            font-weight: 600;
+        }
+
+        .comment-time {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-left: 0.8rem;
+        }
+
+        .comment-text {
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.8rem;
+        }
+
+        .comment-action-btn {
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding: 5px 0;
+            transition: all 0.2s ease;
+        }
+
+        .comment-action-btn:hover {
+            color: var(--primary);
+        }
+
+        /* Comment Form */
+        .comment-form {
+            margin-top: 1.5rem;
+            position: relative;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 30px;
+            border: 1px solid var(--neutral-dark);
+            background-color: var(--neutral);
+            outline: none;
+            transition: all 0.3s ease;
+            padding-right: 60px;
+        }
+
+        .comment-input:focus {
+            border-color: var(--primary-light);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(124, 67, 189, 0.1);
+        }
+
+        .comment-submit-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .comment-submit-btn:hover {
+            background-color: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        /* Animations */
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.6s ease-in-out;
+        }
+
+        .animate-slide-left {
+            animation: slideLeft 0.6s ease-in-out;
+        }
+
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideLeft {
+            from { transform: translateX(30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
             .issue-title {
                 font-size: 1.5rem;
             }
 
-            .image-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            .issue-meta {
+                gap: 1rem;
             }
 
-            .image-card img {
-                height: 150px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .issue-container {
-                margin: 0.5rem;
-                padding: 1rem;
+            .issue-header {
+                height: 200px;
             }
 
-            .user-header {
-                flex-direction: column;
-                text-align: center;
+            .issue-actions {
+                justify-content: center;
+                gap: 1rem;
             }
 
-            .profile-image {
-                margin-right: 0;
-                margin-bottom: 1rem;
-            }
-
-            .image-grid {
+            .stats-grid {
                 grid-template-columns: 1fr;
             }
         }
-         @media (max-width: 992px) {
-        .navbar-brand {
-            padding-left: 1rem;
-        }
 
-        #navbarNav {
-            padding-right: 1rem;
-        }
+        @media (min-width: 768px) {
+            .main-container {
+                padding: 2rem;
+            }
 
-        .nav-item {
-            margin: 0.5rem 0;
+            .info-section {
+                position: sticky;
+                top: 100px;
+            }
         }
-    }
-
-    @media (max-width: 768px) {
-        .issue-container {
-            margin: 1rem;
-            padding: 1.5rem;
-        }
-
-        .issue-title {
-            font-size: 1.5rem;
-        }
-
-        .user-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .profile-image {
-            margin-bottom: 1rem;
-        }
-
-        .upvote-section {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .image-grid {
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        }
-
-        .image-card img {
-            height: 150px;
-        }
-
-        .comment-form textarea {
-            width: 100%;
-        }
-    }
-
-    @media (max-width: 576px) {
-        body {
-            padding-top: 66px;
-        }
-
-        .navbar-brand {
-            font-size: 1.1rem;
-            padding-left: 0.5rem;
-        }
-
-        .issue-container {
-            margin: 0.5rem;
-            padding: 1rem;
-            border-radius: 10px;
-        }
-
-        .issue-title {
-            font-size: 1.3rem;
-        }
-
-        .image-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .image-card img {
-            height: 200px;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 0.75rem;
-        }
-
-        .btn-warning {
-            width: 100%;
-            margin-top: 1rem;
-        }
-    }
-
-    /* Add this to handle the rate button positioning */
-    .rate-section {
-        text-align: center;
-        margin: 2rem 0;
-    }
     </style>
 </head>
 <body>
-
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-city me-2"></i>     FixOurCity
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-city me-2"></i>FixOurCity
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto ml-auto">
-                    <li class="nav-item">
+                <ul class="navbar-nav ms-auto">
                     {% if user.role == 'public' %}
-                        <a href="{% url 'view_issues' %}" class="nav-link"><i class="fas fa-list me-1"></i>View Issues</a>
-                    {% elif user.role == 'authority' %}
-                        <a href="{% url 'authority_dashboard' %}" class="nav-link">Dashboard</a>
-                    {% elif user.role == 'contractor' %}
-                        <a href="{% url 'contractor_dashboard' %}" class="nav-link">Dashboard</a>
-                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'create_issue' %}"><i class="fas fa-plus-circle me-1"></i>Report Issue</a>
                     </li>
+                    {% elif user.role == 'authority' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'authority_dashboard' %}"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a>
+                    </li>
+                    {% elif user.role == 'contractor' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contractor_dashboard' %}"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user me-1"></i>Profile</a>
                     </li>
@@ -400,120 +644,244 @@
             </div>
         </div>
     </nav>
-    <div class="issue-container">
-        <div class="user-header">
-            <img class="profile-image" 
-                src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'images/nikhil.jpg' %}{% endif %}" 
-                alt="User profile">
-            <div class="user-info">
-                <h3 class="username">{{ issue.reported_by.username }}</h3>
-                <span class="post-time">{{ issue.created_at|timesince }} ago</span>
-            </div>
-        </div>
 
-        <h1 class="issue-title">{{ issue.title }}</h1>
-        
-        <div class="issue-details">
-            <p>{{ issue.description }}</p>
-            
-            <div class="issue-metadata">
-                <div class="metadata-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>{{ issue.location }}</span>
-                </div>
-                <div class="metadata-item">
-                    <i class="fas fa-info-circle"></i>
-                    <span>Status: {{ issue.get_status_display }}</span>
-                </div>
-            </div>
-
-            <div class="upvote-section">
-                <span id="upvotes-count" class="h5 mb-0">{{ issue.upvotes_count }} upvotes</span>
-                {% if user.is_authenticated %}
-                    <button class="upvote-btn" onclick="upvoteIssue({{ issue.id }})">
-                        <i class="fas fa-arrow-up"></i>
-                        {% if user in issue.upvotes.all %}
-                            Remove Upvote
-                        {% else %}
-                            Upvote
-                        {% endif %}
-                    </button>
-                {% endif %}
-            </div>
-        </div>
-
-        {% if issue.images.all %}
-        <div class="images-section">
-            <h3>Images</h3>
-            <div class="image-grid">
-                {% for image in issue.images.all %}
-                    <div class="image-card">
-                        <img src="{{ image.image.url }}" alt="{{ image.caption }}">
-                        <div class="image-caption">{{ image.caption }}</div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        <div class="comments-section">
-            <h3>Comments</h3>
-            {% for comment in comments %}
-                <div class="comment-card">
-                    <p>{{ comment.content }}</p>
-                    <div class="comment-meta">
-                        <i class="fas fa-user"></i> {{ comment.user.username }} 
-                        <i class="fas fa-clock ms-2"></i> {{ comment.created_at }}
-                    </div>
-                </div>
-            {% endfor %}
-
-            {% if user.is_authenticated %}
-                <form method="post" class="comment-form">
-                    {% csrf_token %}
-                    {{ comment_form }}
-                    <button type="submit" class="submit-btn">
-                        <i class="fas fa-paper-plane me-2"></i>Add Comment
-                    </button>
-                </form>
-            {% endif %}
-        </div>
-        {% if issue.status == 'completed' and issue.contractor %}
-        <div class="rate-section">
-            <a href="{% url 'rate_contractor' issue.id %}" class="btn btn-warning">
-                {% if user_has_rated %}Update Rating{% else %}Rate Contractor{% endif %}
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="mb-4">
+            <a href="{% url 'view_issues' %}" class="btn btn-outline-primary rounded-pill">
+                <i class="fas fa-arrow-left me-2"></i>Back to Issues
             </a>
         </div>
-        {% endif %}
-        
+
+        <div class="issue-detail-container">
+            <!-- Main Issue Content -->
+            <div class="animate-fade-in">
+                <div class="issue-main-card" data-aos="fade-up">
+                    <!-- Issue Header -->
+                    <div class="issue-header" style="background-image: url({% if issue.images.first %}{{ issue.images.first.image.url }}{% else %}{% static 'images/default-issue.jpg' %}{% endif %});">
+                        <div class="issue-header-overlay">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="issue-status status-{{ issue.status|lower }}">
+                                    <i class="fas fa-{{ issue.status|status_icon }} me-1"></i>{{ issue.get_status_display }}
+                                </span>
+                                <span class="text-white"><i class="far fa-clock me-1"></i>{{ issue.created_at|date:"F d, Y" }}</span>
+                            </div>
+                            <h1 class="issue-title">{{ issue.title }}</h1>
+                            <div class="issue-meta">
+                                <div class="issue-meta-item">
+                                    <i class="fas fa-user"></i>
+                                    <span>{{ issue.reported_by.username }}</span>
+                                </div>
+                                <div class="issue-meta-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>{{ issue.address }}</span>
+                                </div>
+                                <div class="issue-meta-item">
+                                    <i class="fas fa-tag"></i>
+                                    <span>{{ issue.category.name }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Issue Body -->
+                    <div class="issue-body">
+                        <p class="issue-description" data-aos="fade-up" data-aos-delay="100">{{ issue.description }}</p>
+
+                        <!-- Issue Media -->
+                        {% if issue.images.all %}
+                        <div class="issue-media" data-aos="fade-up" data-aos-delay="200">
+                            <div class="row">
+                                {% for image in issue.images.all %}
+                                <div class="col-md-4 mb-3">
+                                    <img src="{{ image.image.url }}" alt="Issue Image" class="img-fluid rounded-3">
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Issue Actions -->
+                        <div class="issue-actions" data-aos="fade-up" data-aos-delay="300">
+                            <div>
+                                <div class="upvote-section">
+                                    <span id="upvotes-count" class="h5 mb-0">{{ issue.upvotes_count }} upvotes</span>
+                                    {% if user.is_authenticated %}
+                                        <button class="upvote-btn" onclick="upvoteIssue({{ issue.id }})" id="upvote-button">
+                                            <i class="fas fa-arrow-up"></i>
+                                            {% if user in issue.upvotes.all %}
+                                                Remove Upvote
+                                            {% else %}
+                                                Upvote
+                                            {% endif %}
+                                        </button>
+                                    {% endif %}
+                                </div>
+
+                                <button class="action-btn share-btn">
+                                    <i class="fas fa-share-alt"></i>
+                                    <span>Share</span>
+                                </button>
+                            </div>
+                            {% if user.is_authenticated %}
+                            <button class="action-btn report-btn">
+                                <i class="fas fa-flag"></i>
+                                <span>Report</span>
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="comments-section" data-aos="fade-up" data-aos-delay="400">
+                    <div class="comments-header">
+                        <h3 class="comments-title"><i class="far fa-comments me-2"></i>Community Discussion</h3>
+                        <span class="badge bg-primary rounded-pill">{{ comments.count }} Comments</span>
+                    </div>
+
+                    <!-- Comments List -->
+                    <div class="comments-list">
+                        {% for comment in comments %}
+                        <div class="comment-card">
+                            <div class="comment-header">
+                                <div class="comment-avatar">{{ comment.user.username|first|upper }}</div>
+                                <div>
+                                    <div class="comment-user">{{ comment.user.username }}</div>
+                                    <span class="comment-time">{{ comment.created_at|timesince }} ago</span>
+                                </div>
+                            </div>
+                            <div class="comment-text">
+                                {{ comment.content }}
+                            </div>
+                            <div class="comment-actions">
+                                <button class="comment-action-btn">
+                                    <i class="far fa-thumbs-up me-1"></i>Like ({{ comment.likes.count }})
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Comment Form -->
+                    {% if user.is_authenticated %}
+                    <div class="comment-form">
+                        <form method="post" id="comment-form">
+                            {% csrf_token %}
+                                <!-- Change this line in issue_detail.html -->
+                                <input type="text" name="content" class="comment-input" placeholder="Add your comment..." required>                            <button type="submit" class="comment-submit-btn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Sidebar Info Section -->
+            <div class="info-section">
+                <!-- Status Card -->
+                <div class="info-card" data-aos="fade-left" data-aos-delay="100">
+                    <h3 class="info-card-title"><i class="fas fa-info-circle"></i>Issue Status</h3>
+                    <div class="progress mb-3" style="height: 10px;">
+                        <div class="progress-bar bg-{{ issue.status|status_color }} progress-bar-striped" 
+                             role="progressbar" 
+                             style="width: {{ issue.status|status_progress }}%;"
+                             aria-valuenow="{{ issue.status|status_progress }}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                            <span class="position-absolute" style="top: -25px; right: 0; font-size: 12px;">
+                                {{ issue.status|status_progress }}%
+                            </span>
+                        </div>
+                    </div>
+                    <p>{{ issue.status|status_description }}</p>
+                </div>
+
+                <!-- Statistics Card -->
+                <div class="info-card" data-aos="fade-left" data-aos-delay="300">
+                    <h3 class="info-card-title"><i class="fas fa-chart-bar"></i>Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value">{{ issue.upvotes.count }}</span>
+                            <span class="stat-label">Upvotes</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">{{ comments.count }}</span>
+                            <span class="stat-label">Comments</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">{{ issue.views }}</span>
+                            <span class="stat-label">Views</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">{{ issue.created_at|timesince }}</span>
+                            <span class="stat-label">Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Card -->
+                <div class="info-card" data-aos="fade-left" data-aos-delay="400">
+                    <h3 class="info-card-title"><i class="fas fa-history"></i>Timeline</h3>
+                    <div class="timeline">
+                        {% for event in issue.history.all %}
+                        <div class="timeline-item">
+                            <div class="timeline-date">{{ event.timestamp|date:"F d, Y" }}</div>
+                            <div class="timeline-content">{{ event.get_status_display }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    
-
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
         function upvoteIssue(issueId) {
-            fetch(`/issues/upvote/${issueId}/`, {
+                fetch(`/issues/upvote/${issueId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('upvotes-count').textContent = `${data.upvotes_count} upvotes`;
+                    const btn = document.querySelector('.upvote-btn');
+                    if (data.action === 'added') {
+                        btn.innerHTML = '<i class="fas fa-arrow-up"></i> Remove Upvote';
+                    } else {
+                        btn.innerHTML = '<i class="fas fa-arrow-up"></i> Upvote';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        AOS.init();
+
+        // Comment form submission
+        document.getElementById('comment-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+
+            const response = await fetch('{% url "add_comment" issue.id %}', {
                 method: 'POST',
+                body: formData,
                 headers: {
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('upvotes-count').textContent = `${data.upvotes_count} upvotes`;
-                const btn = document.querySelector('.upvote-btn');
-                if (data.action === 'added') {
-                    btn.innerHTML = '<i class="fas fa-arrow-up"></i> Remove Upvote';
-                } else {
-                    btn.innerHTML = '<i class="fas fa-arrow-up"></i> Upvote';
+                    'X-CSRFToken': '{{ csrf_token }}'
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
             });
-        }
+
+            if (response.ok) {
+                location.reload();
+            }
+        });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
