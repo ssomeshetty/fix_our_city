@@ -225,7 +225,7 @@
                     <h3 class="issue-title">{{ issue.title }}</h3>
                     <p class="issue-description">{{ issue.description|truncatewords:30 }}</p>
                     <div class="issue-meta">
-                        <span><i class="fas fa-map-marker-alt me-2"></i>{{ issue.address }}</span>
+                        <span><i class="fas fa-map-marker-alt me-2"></i>Location: {{ issue.address }}</span>
                         <span class="upvote-count"><i class="fas fa-arrow-up"></i>Upvotes: {{ issue.upvotes_count }}</span>
                     </div>
                     <a href="{% url 'issue_detail' issue.id %}" class="view-details-btn">View Details</a>
