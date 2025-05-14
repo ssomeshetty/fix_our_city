@@ -776,6 +776,13 @@
                     </div>
                     {% endif %}
                 </div>
+                {% if issue.status == 'completed' and issue.contractor %}
+                    <div class="rate-section">
+                        <a href="{% url 'rate_contractor' issue.id %}" class="btn btn-warning">
+                            {% if user_has_rated %}Update Rating{% else %}Rate Contractor{% endif %}
+                        </a>
+                    </div>
+                {% endif %}
             </div>
 
             <!-- Sidebar Info Section -->
