@@ -15,3 +15,5 @@ class Authority(models.Model):
 
     class Meta:
         verbose_name_plural = "Authorities"
+    def __str__(self):
+        return self.name  # Return the name of the authority instead of the default "Authority object(id)"

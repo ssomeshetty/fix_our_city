@@ -3,178 +3,643 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Issues - FixOurCity</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>FixOurCity - Issues Overview</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
         :root {
-            --primary: #4a148c;
-            --primary-light: #7c43bd;
-            --primary-dark: #12005e;
-            --secondary: #ff4081;
-            --secondary-light: #ff79b0;
-            --secondary-dark: #c60055;
+            --primary-color: #6C63FF;      /* Vibrant Purple */
+            --primary-light: #8B84FF;      /* Light Purple */
+            --primary-dark: #4F46E5;       /* Deep Purple */
+            --secondary-color: #00E5B6;    /* Bright Teal */
+            --secondary-light: #4AFFCE;    /* Light Teal */
+            --accent-color: #FF9100;       /* Bright Orange */
+            --accent-light: #FFB74D;       /* Light Orange */
+            --gradient-1: linear-gradient(135deg, #6C63FF 0%, #00E5B6 100%);
+            --gradient-2: linear-gradient(135deg, #FF9100 0%, #FF4081 100%);
+            --white: #ffffff;
+            --light-gray: #F8F9FA;
+            --dark-gray: #2D3436;
+            --text-color: #333333;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: linear-gradient(-45deg, rgba(108,99,255,0.15), rgba(0,229,182,0.1), rgba(255,145,0,0.1), rgba(255,64,129,0.15));
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='%236C63FF' fill-opacity='0.1' d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z'%3E%3C/path%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        /* Floating shapes with enhanced colors */
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: float 12s infinite ease-in-out;
+        }
+
+        .shape1 {
+            width: 80px;
+            height: 80px;
+            left: 5%;
+            top: 20%;
+            animation-delay: 0s;
+            animation-duration: 18s;
+            background: var(--primary-color);
+        }
+
+        .shape2 {
+            width: 120px;
+            height: 120px;
+            right: 10%;
+            top: 40%;
+            animation-delay: 2s;
+            animation-duration: 16s;
+            background: var(--secondary-color);
+        }
+
+        .shape3 {
+            width: 60px;
+            height: 60px;
+            left: 20%;
+            bottom: 30%;
+            animation-delay: 4s;
+            animation-duration: 14s;
+            background: var(--accent-color);
+        }
+
+        .shape4 {
+            width: 100px;
+            height: 100px;
+            right: 20%;
+            bottom: 10%;
+            animation-delay: 6s;
+            animation-duration: 20s;
+            background: var(--primary-dark);
+        }
+
+        .shape5 {
+            width: 50px;
+            height: 50px;
+            left: 40%;
+            top: 10%;
+            animation-delay: 8s;
+            animation-duration: 15s;
+            background: var(--accent-light);
+        }
+
+
+        /* City silhouette with new color */
+        .city-silhouette {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 180px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'%3E%3Cpath fill='%236C63FF' fill-opacity='0.4' d='M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,202.7C672,203,768,181,864,181.3C960,181,1056,203,1152,208C1248,213,1344,203,1392,197.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            opacity: 0.8;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+            50% {
+                transform: translateY(-40px) rotate(0deg);
+            }
+            75% {
+                transform: translateY(-20px) rotate(-5deg);
+            }
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            
         }
-
-        /* Navbar Styles */
+        
+        /* Enhanced Navbar */
         .navbar {
-            background: var(--primary);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: var(--gradient-1);
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.2);
+            transition: all 0.3s ease;
+            padding: 15px 0;
+            animation: slideInFromTop 0.8s ease-out;
+            
         }
 
         .navbar-brand {
             font-weight: 700;
-            color: white !important;
+            color: var(--white) !important;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+            margin-right: 8px;
+            color: var(--accent-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
         }
 
         .nav-link {
-            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            padding: 8px 15px !important;
+            border-radius: 4px;
             transition: all 0.3s ease;
+            color: var(--white) !important;
+            position: relative;
+        }
+
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover:after {
+            width: 80%;
+            left: 10%;
         }
 
         .nav-link:hover {
-            color: white !important;
             transform: translateY(-2px);
-        }
+        }        
 
-        /* Main Content */
+        /* Main Container */
         .main-container {
-            padding: 2rem;
-            margin-top: 76px;
+            padding-top: 100px;
+            padding-bottom: 40px;
+            min-height: 100vh;
         }
 
-        /* Tab Buttons */
-        .tab-button {
-            background-color: var(--primary-light);
-            color: white;
+        h1 {
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+            color: var(--primary-dark);
+        }
+
+        h1:after {
+            content: '';
+            position: absolute;
+            width: 70%;
+            height: 4px;
+            background: var(--gradient-1);
+            bottom: 0;
+            left: 0;
+            border-radius: 2px;
+        }
+
+        /* Filters and Tabs */
+        .filter-options {
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        #location-filter-btn {
+            background: var(--gradient-1);
             border: none;
-            padding: 12px 24px;
-            border-radius: 50px;
-            margin: 0 10px 20px 0;
+            padding: 12px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
             transition: all 0.3s ease;
-            font-weight: 500;
+            font-weight: 600;
+        }
+
+        #location-filter-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.4);
+        }
+
+        #location-filter-btn.active {
+            background: var(--gradient-2);
+            box-shadow: 0 4px 15px rgba(255, 145, 0, 0.3);
+        }
+
+        #location-status {
+            margin-left: 15px;
+            font-size: 0.95rem;
+            color: var(--primary-dark);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .tab-button {
+            background: var(--white);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-1);
+            transition: all 0.4s ease;
+            z-index: -1;
         }
 
         .tab-button:hover {
-            background-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: var(--white);
+        }
+
+        .tab-button:hover:before {
+            left: 0;
         }
 
         .tab-button.active {
-            background-color: var(--secondary);
+            background: var(--gradient-1);
+            color: var(--white);
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
         }
 
-        /* Cards */
+        .tab-button:nth-child(2).active {
+            background: linear-gradient(135deg, #6C63FF 30%, #00E5B6 100%);
+        }
+
+        .tab-button:nth-child(3).active {
+            background: linear-gradient(135deg, #00E5B6 30%, #6C63FF 100%);
+        }
+
+        .tab-button i {
+            margin-right: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .tab-button:hover i {
+            transform: scale(1.2);
+        }
+
+        /* Issue Cards */
+        .issues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
         .issue-card {
-            background: white;
+            background: var(--white);
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
-            border: none;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border-top: 4px solid transparent;
+            animation: cardAppear 0.5s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #new-issues .issue-card {
+            border-top-color: var(--primary-color);
+        }
+
+        #pending-issues .issue-card {
+            border-top-color: var(--accent-color);
+        }
+
+        #completed-issues .issue-card {
+            border-top-color: var(--secondary-color);
         }
 
         .issue-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .issue-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-1);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .issues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+
+        .issue-card:hover:before {
+            opacity: 0.03;
         }
 
         .issue-title {
-            color: var(--primary);
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin-bottom: 12px;
+            color: var(--primary-dark);
+            line-height: 1.4;
         }
 
         .issue-description {
-            color: #666;
-            margin-bottom: 1rem;
-            line-height: 1.6;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            line-height: 1.5;
+            flex-grow: 1;
         }
 
         .issue-meta {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
             font-size: 0.9rem;
-            color: #777;
+            color: var(--dark-gray);
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .issue-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .upvote-count {
             display: flex;
             align-items: center;
-            gap: 5px;
-            color: var(--secondary);
+            padding: 4px 10px;
+            background-color: rgba(108, 99, 255, 0.1);
+            border-radius: 20px;
             font-weight: 500;
         }
 
+        .upvote-count i {
+            color: var(--primary-color);
+            margin-right: 5px;
+        }
+
         .view-details-btn {
-            background-color: var(--primary);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 50px;
-            text-decoration: none;
-            transition: all 0.3s ease;
             display: inline-block;
+            padding: 8px 20px;
+            background: var(--gradient-1);
+            color: var(--white);
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(108, 99, 255, 0.2);
+            text-align: center;
         }
 
         .view-details-btn:hover {
-            background-color: var(--primary-dark);
-            color: white;
+            box-shadow: 0 6px 15px rgba(108, 99, 255, 0.3);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: var(--white);
         }
 
-        /* Grid Layout */
-        .issues-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            padding: 1rem 0;
-        }
-
-        /* Empty State */
-        .empty-state {
+        /* No issues message */
+        .no-issues-message {
+            grid-column: 1 / -1;
             text-align: center;
-            padding: 3rem;
-            color: #666;
+            padding: 40px;
+            background-color: rgba(0, 0, 0, 0.02);
+            border-radius: 15px;
+            color: #888;
+            font-size: 1.1rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Notification indicator */
+        .notification-indicator {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .notification-indicator:hover {
+            transform: scale(1.05);
+        }
+
+        .notification-indicator .btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: var(--gradient-2);
+            border: none;
+            box-shadow: 0 5px 20px rgba(255, 145, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification-indicator .btn:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+            top: -50%;
+            left: -50%;
+            transition: all 0.5s ease;
+        }
+
+        .notification-indicator .btn:hover:after {
+            top: -20%;
+            left: -20%;
+        }
+
+        .notification-indicator .badge {
+            font-size: 0.75rem;
+            padding: 0.25em 0.6em;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes cardAppear {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         /* Responsive Design */
+        @media (max-width: 992px) {
+            .navbar-collapse {
+                background-color: var(--white);
+                padding: 20px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                margin-top: 15px;
+            }
+
+            .nav-link {
+                margin: 8px 0;
+            }
+
+            .issues-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
         @media (max-width: 768px) {
             .main-container {
-                padding: 1rem;
+                padding-top: 90px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .filter-options {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            #location-status {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+
+            .tabs {
+                justify-content: center;
             }
 
             .tab-button {
-                padding: 8px 16px;
-                font-size: 0.9rem;
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+                padding: 10px 15px;
             }
 
+            .issue-meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 576px) {
             .issues-grid {
                 grid-template-columns: 1fr;
             }
 
-            .issue-card {
-                padding: 1rem;
+            .notification-indicator {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .notification-indicator .btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
             }
         }
+        
     </style>
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand animate__animated animate__fadeIn" href="#">
                 <i class="fas fa-city me-2"></i>FixOurCity
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -182,16 +647,19 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
+                    <li class="nav-item animate__animated animate__fadeIn" style="animation-delay: 0.1s">
+                        <a class="nav-link" href="{% url 'dept' %}"><i class="fas fa-tachometer-alt me-1"></i>Authorities</a>
+                    </li>
+                    <li class="nav-item animate__animated animate__fadeIn" style="animation-delay: 0.1s">
                         <a class="nav-link" href="{% url 'create_issue' %}"><i class="fas fa-plus-circle me-1"></i>Report Issue</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item animate__animated animate__fadeIn" style="animation-delay: 0.2s">
                         <a class="nav-link" href="{% url 'view_issues' %}"><i class="fas fa-list me-1"></i>View Issues</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item animate__animated animate__fadeIn" style="animation-delay: 0.3s">
                         <a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user me-1"></i>Profile</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item animate__animated animate__fadeIn" style="animation-delay: 0.4s">
                         <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
                     </li>
                 </ul>
@@ -201,48 +669,35 @@
 
     <!-- Main Content -->
     <div class="main-container container">
-        <h1 class="mb-4">Issues Overview</h1>
+        <h1 class="mb-4 animate__animated animate__fadeIn">Issues Overview</h1>
+        
+        <!-- Filter Options -->
+        <div class="filter-options mb-4 animate__animated animate__fadeIn" style="animation-delay: 0.2s">
+            <button id="location-filter-btn" class="btn btn-primary me-3">
+                <i class="fas fa-map-marker-alt me-2"></i>Show Nearby Issues
+            </button>
+            <span id="location-status" class="text-muted"></span>
+        </div>
         
         <!-- Tab Buttons -->
-        <div class="tabs mb-4">
-            <button class="tab-button active" onclick="showTab('new')">
+        <div class="tabs mb-4 animate__animated animate__fadeIn" style="animation-delay: 0.3s">
+            <button class="tab-button active" data-tab="new">
                 <i class="fas fa-exclamation-circle me-2"></i>New Issues
             </button>
-            <button class="tab-button" onclick="showTab('pending')">
+            <button class="tab-button" data-tab="pending">
                 <i class="fas fa-clock me-2"></i>Pending Issues
             </button>
-            <button class="tab-button" onclick="showTab('completed')">
+            <button class="tab-button" data-tab="completed">
                 <i class="fas fa-check-circle me-2"></i>Completed Issues
             </button>
         </div>
 
         <!-- Tab Contents -->
-        <div id="new-issues" class="tab-content">
+        <div id="new-issues" class="tab-content animate__animated animate__fadeIn" style="animation-delay: 0.4s">
             <div class="issues-grid">
                 <!-- Sample New Issues -->
                 {% for issue in new_issues %}
-                <div class="issue-card">
-                    <h3 class="issue-title">{{ issue.title }}</h3>
-                    <p class="issue-description">{{ issue.description|truncatewords:30 }}</p>
-                    <div class="issue-meta">
-                        <span><i class="fas fa-map-marker-alt me-2"></i>Location: {{ issue.address }}</span>
-                        <span class="upvote-count"><i class="fas fa-arrow-up"></i>Upvotes: {{ issue.upvotes_count }}</span>
-                    </div>
-                    <a href="{% url 'issue_detail' issue.id %}" class="view-details-btn">View Details</a>
-                </div>
-                <!-- More cards... -->
-                {% empty %}
-                    <p>No new issues.</p>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div id="pending-issues" class="tab-content" style="display: none;">
-            <div class="issues-grid">
-                <!-- Sample Pending Issues -->
-                {% for issue in pending_issues %}
-
-                <div class="issue-card">
+                <div class="issue-card" data-lat="{{ issue.latitude }}" data-lng="{{ issue.longitude }}" style="animation-delay: {{ forloop.counter|add:5 }}0ms">
                     <h3 class="issue-title">{{ issue.title }}</h3>
                     <p class="issue-description">{{ issue.description|truncatewords:30 }}</p>
                     <div class="issue-meta">
@@ -251,9 +706,27 @@
                     </div>
                     <a href="{% url 'issue_detail' issue.id %}" class="view-details-btn">View Details</a>
                 </div>
-                <!-- More cards... -->
-                 {% empty %}
-                    <p>No pending issues.</p>
+                {% empty %}
+                    <p id="no-new-issues" class="no-issues-message">No new issues.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div id="pending-issues" class="tab-content" style="display: none;">
+            <div class="issues-grid">
+                <!-- Sample Pending Issues -->
+                {% for issue in pending_issues %}
+                <div class="issue-card" data-lat="{{ issue.latitude }}" data-lng="{{ issue.longitude }}" style="animation-delay: {{ forloop.counter|add:5 }}0ms">
+                    <h3 class="issue-title">{{ issue.title }}</h3>
+                    <p class="issue-description">{{ issue.description|truncatewords:30 }}</p>
+                    <div class="issue-meta">
+                        <span><i class="fas fa-map-marker-alt me-2"></i>{{ issue.address }}</span>
+                        <span class="upvote-count"><i class="fas fa-arrow-up"></i>{{ issue.upvotes_count }}</span>
+                    </div>
+                    <a href="{% url 'issue_detail' issue.id %}" class="view-details-btn">View Details</a>
+                </div>
+                {% empty %}
+                    <p id="no-pending-issues" class="no-issues-message">No pending issues.</p>
                 {% endfor %}
             </div>
         </div>
@@ -262,53 +735,277 @@
             <div class="issues-grid">
                 <!-- Sample Completed Issues -->
                 {% for issue in completed_issues %}
-                <div class="issue-card">
+                <div class="issue-card" data-lat="{{ issue.latitude }}" data-lng="{{ issue.longitude }}" style="animation-delay: {{ forloop.counter|add:5 }}0ms">
                     <h3 class="issue-title">{{ issue.title }}</h3>
                     <p class="issue-description">{{ issue.description|truncatewords:30 }}</p>
                     <div class="issue-meta">
                         <span><i class="fas fa-map-marker-alt me-2"></i>{{ issue.address }}</span>
-                        <span class="upvote-count"><i class="fas fa-arrow-up">{{ issue.upvotes_count }}</i></span>
+                        <span class="upvote-count"><i class="fas fa-arrow-up"></i>{{ issue.upvotes_count }}</span>
                     </div>
                     <a href="{% url 'issue_detail' issue.id %}" class="view-details-btn">View Details</a>
                 </div>
-                <!-- More cards... -->
                 {% empty %}
-                    <p>No completed issues.</p>
+                    <p id="no-completed-issues" class="no-issues-message">No completed issues.</p>
                 {% endfor %}
             </div>
         </div>
     </div>
 
+    <!-- Notification Indicator -->
+    <div class="notification-indicator animate__animated animate__bounceIn" style="animation-delay: 0.8s">
+        <a href="{% url 'view_notifications' %}" class="btn btn-primary btn-lg rounded-circle">
+            🔔
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ unread_notifications_count }}
+            </span>
+        </a>
+    </div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Apply card animations with staggered delay
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply animations to cards with staggered delay
+            document.querySelectorAll('.issue-card').forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.animation = `cardAppear 0.5s ease forwards`;
+                }, 100 * index);
+            });
+
+            // Navbar scroll effect
+            const navbar = document.querySelector('.navbar');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 10) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Tab switching functionality with animations
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    showTab(tabName);
+                });
+            });
+        });
+
+        // Tab switching function with animations
         function showTab(tabName) {
             // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.style.display = 'none';
             });
             
-            // Show selected tab
-            document.getElementById(tabName + '-issues').style.display = 'block';
+            // Show selected tab with fade animation
+            const selectedTab = document.getElementById(tabName + '-issues');
+            selectedTab.style.display = 'block';
+            selectedTab.classList.add('animate__animated', 'animate__fadeIn');
+            
+            // Reset animation after it completes
+            setTimeout(() => {
+                selectedTab.classList.remove('animate__animated', 'animate__fadeIn');
+            }, 500);
             
             // Update active button state
             document.querySelectorAll('.tab-button').forEach(button => {
                 button.classList.remove('active');
             });
-            document.querySelector(`.tab-button:nth-child(${
-                tabName === 'new' ? 1 : tabName === 'pending' ? 2 : 3
-            })`).classList.add('active');
+            document.querySelector(`.tab-button[data-tab="${tabName}"]`).classList.add('active');
+            
+            // If location filtering is on, apply it to the newly selected tab
+            if (locationFilterActive) {
+                filterIssuesByLocation(currentPosition);
+            }
+
+            // Re-apply card animations
+            applyCardAnimations(selectedTab);
         }
 
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 10) {
-                navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+        // Apply staggered animations to cards
+        function applyCardAnimations(container) {
+            const cards = container.querySelectorAll('.issue-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.animation = `cardAppear 0.5s ease forwards`;
+                }, 50 * index);
+            });
+        }
+
+        // Location filtering
+        let locationFilterActive = false;
+        let currentPosition = null;
+        
+        document.getElementById('location-filter-btn').addEventListener('click', function() {
+            const statusElement = document.getElementById('location-status');
+            
+            if (locationFilterActive) {
+                // Turn off location filtering with animation
+                locationFilterActive = false;
+                this.classList.remove('active');
+                this.innerHTML = '<i class="fas fa-map-marker-alt me-2"></i>Show Nearby Issues';
+                statusElement.textContent = '';
+                statusElement.classList.add('animate__animated', 'animate__fadeOut');
+                
+                setTimeout(() => {
+                    statusElement.classList.remove('animate__animated', 'animate__fadeOut');
+                    
+                    // Show all issues with staggered animation
+                    const currentTab = document.querySelector('.tab-content[style="display: block;"]');
+                    const cards = currentTab.querySelectorAll('.issue-card');
+                    cards.forEach((card, index) => {
+                        card.style.display = 'block';
+                        card.style.opacity = '0';
+                        setTimeout(() => {
+                            card.style.animation = 'cardAppear 0.5s ease forwards';
+                        }, 50 * index);
+                    });
+                    
+                    // Hide "no issues" messages if there are issues
+                    document.querySelectorAll('.tab-content').forEach(tab => {
+                        const cards = tab.querySelectorAll('.issue-card');
+                        const noIssuesMsg = tab.querySelector('.no-issues-message');
+                        
+                        if (cards.length > 0) {
+                            if (noIssuesMsg) noIssuesMsg.style.display = 'none';
+                        } else {
+                            if (noIssuesMsg) noIssuesMsg.style.display = 'block';
+                        }
+                    });
+                }, 500);
+                
+                return;
+            }
+            
+            // Turn on location filtering
+            statusElement.textContent = 'Getting your location...';
+            statusElement.classList.add('animate__animated', 'animate__fadeIn');
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    // Success callback
+                    function(position) {
+                        currentPosition = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        
+                        locationFilterActive = true;
+                        const btn = document.getElementById('location-filter-btn');
+                        btn.classList.add('active');
+                        btn.innerHTML = '<i class="fas fa-map-marker-alt me-2"></i>Show All Issues';
+                        
+                        statusElement.classList.add('animate__animated', 'animate__fadeIn');
+                        statusElement.textContent = 'Showing issues within 1km of your location';
+                        
+                        filterIssuesByLocation(currentPosition);
+                    },
+                    // Error callback
+                    function(error) {
+                        let errorMsg = '';
+                        
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMsg = 'You denied the request for geolocation.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMsg = 'Location information is unavailable.';
+                                break;
+                            case error.TIMEOUT:
+                                errorMsg = 'The request to get user location timed out.';
+                                break;
+                            default:
+                                errorMsg = 'An unknown error occurred.';
+                        }
+                        
+                        statusElement.classList.add('animate__animated', 'animate__shakeX');
+                        statusElement.textContent = errorMsg;
+                        setTimeout(() => {
+                            statusElement.classList.remove('animate__animated', 'animate__shakeX');
+                        }, 1000);
+                    }
+                );
             } else {
-                navbar.style.boxShadow = 'none';
+                statusElement.classList.add('animate__animated', 'animate__shakeX');
+                statusElement.textContent = 'Geolocation is not supported by this browser.';
+                setTimeout(() => {
+                    statusElement.classList.remove('animate__animated', 'animate__shakeX');
+                }, 1000);
             }
         });
+        
+        // Function to calculate distance between two points using the Haversine formula
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the Earth in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const distance = R * c; // Distance in km
+            return distance;
+        }
+          // Filter issues by location
+        function filterIssuesByLocation(position) {
+            if (!position) return;
+            
+            const maxDistance = 1; // Maximum distance in km (1km)
+            let visibleCardsCount = 0;
+            
+            // Get the currently visible tab
+            const activeTab = document.querySelector('.tab-content[style="display: block;"]');
+            const noIssuesMsg = activeTab.querySelector('.no-issues-message');
+            
+            // Filter cards in the active tab
+            activeTab.querySelectorAll('.issue-card').forEach((card, index) => {
+                const cardLat = parseFloat(card.getAttribute('data-lat'));
+                const cardLng = parseFloat(card.getAttribute('data-lng'));
+                
+                if (isNaN(cardLat) || isNaN(cardLng)) {
+                    card.style.display = 'none';
+                    return;
+                }
+                
+                const distance = calculateDistance(
+                    position.lat, position.lng,
+                    cardLat, cardLng
+                );
+                
+                if (distance <= maxDistance) {
+                    card.style.display = 'block';
+                    card.style.opacity = '0';
+                    setTimeout(() => {
+                        card.style.animation = 'cardAppear 0.5s ease forwards';
+                    }, 50 * visibleCardsCount);
+                    visibleCardsCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show or hide "no issues" message based on visible cards
+            if (visibleCardsCount === 0) {
+                if (noIssuesMsg) {
+                    noIssuesMsg.style.display = 'block';
+                    noIssuesMsg.textContent = 'No nearby issues found within 1km.';
+                    noIssuesMsg.classList.add('animate__animated', 'animate__fadeIn');
+                } else {
+                    const newMsg = document.createElement('p');
+                    newMsg.className = 'no-issues-message animate__animated animate__fadeIn';
+                    newMsg.textContent = 'No nearby issues found within 1km.';
+                    activeTab.querySelector('.issues-grid').appendChild(newMsg);
+                }
+            } else if (noIssuesMsg) {
+                noIssuesMsg.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

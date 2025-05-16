@@ -35,17 +35,98 @@ def create_issue(request):
     })
 
 
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.db.models import F, Q
+from .models import Issue
+import json
+import math
+
 def view_issues(request):
-    new_issues = Issue.objects.filter(upvotes_count__lt=50, status='new')
+    # Default query parameters
+    new_issues = Issue.objects.filter(status='new')
     pending_issues = Issue.objects.filter(status='pending')
     completed_issues = Issue.objects.filter(status='completed')
     
+    # Handle location filtering via AJAX
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        try:
+            data = json.loads(request.body)
+            lat = data.get('latitude')
+            lng = data.get('longitude')
+            max_distance = data.get('max_distance', 1)  # Default to 1 km
+            
+            if lat is not None and lng is not None:
+                # Find issues within the specified radius
+                issues_with_coords = Issue.objects.filter(
+                    latitude__isnull=False,
+                    longitude__isnull=False
+                )
+                
+                # We'll filter in Python rather than SQL for geographic calculations
+                # You might want to switch to PostGIS for better performance in production
+                nearby_ids = []
+                
+                for issue in issues_with_coords:
+                    distance = calculate_distance(
+                        float(lat), float(lng),
+                        issue.latitude, issue.longitude
+                    )
+                    if distance <= max_distance:
+                        nearby_ids.append(issue.id)
+                
+                # Filter the querysets
+                new_issues = new_issues.filter(id__in=nearby_ids)
+                pending_issues = pending_issues.filter(id__in=nearby_ids)
+                completed_issues = completed_issues.filter(id__in=nearby_ids)
+                
+                return JsonResponse({
+                    'status': 'success',
+                    'new_count': new_issues.count(),
+                    'pending_count': pending_issues.count(),
+                    'completed_count': completed_issues.count(),
+                    'ids': nearby_ids
+                })
+            
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Invalid coordinates'
+            }, status=400)
+            
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Invalid JSON'
+            }, status=400)
+    
+    # Regular page load
     context = {
         'new_issues': new_issues,
         'pending_issues': pending_issues,
         'completed_issues': completed_issues
     }
     return render(request, 'view_issues.html', context)
+
+def calculate_distance(lat1, lon1, lat2, lon2):
+    """
+    Calculate the distance between two points using Haversine formula
+    Returns distance in kilometers
+    """
+    R = 6371  # Radius of the Earth in km
+    
+    dLat = math.radians(lat2 - lat1)
+    dLon = math.radians(lon2 - lon1)
+    
+    a = (
+        math.sin(dLat/2) * math.sin(dLat/2) +
+        math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) *
+        math.sin(dLon/2) * math.sin(dLon/2)
+    )
+    
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    distance = R * c
+    
+    return distance
 
 @login_required
 def issue_detail(request, issue_id):

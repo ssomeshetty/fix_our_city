@@ -53,6 +53,72 @@ class Issue(models.Model):
 
     def __str__(self):
         return self.title
+    
+     
+    # If you're using the is_nearby method in the Issue model, update that too:
+
+    def is_nearby(self, user_lat, user_lng, max_distance=1):  # Changed from 10km to 1km
+        """
+        Check if the issue is within the specified distance from a given location
+        Distance is calculated in kilometers using the Haversine formula
+        """
+        if self.latitude is None or self.longitude is None:
+            return False
+            
+        import math
+        
+        # Radius of the Earth in km
+        R = 6371
+        
+        # Convert coordinates to radians
+        lat1_rad = math.radians(float(user_lat))
+        lon1_rad = math.radians(float(user_lng))
+        lat2_rad = math.radians(float(self.latitude))
+        lon2_rad = math.radians(float(self.longitude))
+        
+        # Calculate differences
+        dLat = lat2_rad - lat1_rad
+        dLon = lon2_rad - lon1_rad
+        
+        # Haversine formula
+        a = math.sin(dLat/2) * math.sin(dLat/2) + \
+            math.cos(lat1_rad) * math.cos(lat2_rad) * \
+            math.sin(dLon/2) * math.sin(dLon/2)
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+        distance = R * c
+        
+        return distance <= max_distance
+    
+    def distance_from(self, user_lat, user_lng):
+        """
+        Calculate the distance in kilometers from a given location
+        """
+        if self.latitude is None or self.longitude is None:
+            return None
+            
+        import math
+        
+        # Radius of the Earth in km
+        R = 6371
+        
+        # Convert coordinates to radians
+        lat1_rad = math.radians(float(user_lat))
+        lon1_rad = math.radians(float(user_lng))
+        lat2_rad = math.radians(float(self.latitude))
+        lon2_rad = math.radians(float(self.longitude))
+        
+        # Calculate differences
+        dLat = lat2_rad - lat1_rad
+        dLon = lon2_rad - lon1_rad
+        
+        # Haversine formula
+        a = math.sin(dLat/2) * math.sin(dLat/2) + \
+            math.cos(lat1_rad) * math.cos(lat2_rad) * \
+            math.sin(dLon/2) * math.sin(dLon/2)
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+        distance = R * c
+        
+        return round(distance, 1)
 
 
 class ContractorAssignment(models.Model):
@@ -120,3 +186,18 @@ class Comment(models.Model):
     
     def __str__(self):
         return f"Comment by {self.user.username} on {self.issue.title}"
+    
+
+# issues/models.py (add this to the end)
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    message = models.CharField(max_length=255)
+    related_issue = models.ForeignKey(Issue, on_delete=models.SET_NULL, null=True, blank=True)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}: {self.message}"
+
+    class Meta:
+        ordering = ['-created_at']

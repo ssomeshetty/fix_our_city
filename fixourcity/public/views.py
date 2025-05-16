@@ -108,3 +108,31 @@ def profile_update_view(request):
         form = UserProfileForm(instance=request.user)
 
     return render(request, 'profile_update.html', {'form': form})
+
+# public/views.py
+from django.shortcuts import render, get_object_or_404, redirect
+from issues.models import Notification
+
+@login_required
+def view_notifications(request):
+    notifications = request.user.notifications.all().order_by('-created_at')
+    return render(request, 'notifications.html', {
+        'notifications': notifications,
+        'unread_count': request.user.notifications.filter(is_read=False).count()
+    })
+
+@login_required
+def mark_notification_read(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+    notification.is_read = True
+    notification.save()
+    return redirect('view_notifications')
+
+@login_required
+def mark_all_notifications_read(request):
+    request.user.notifications.filter(is_read=False).update(is_read=True)
+    return redirect('view_notifications')
+
+
+def dept(request):
+    return render(request, 'dept.html')

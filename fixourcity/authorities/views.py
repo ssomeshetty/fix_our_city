@@ -42,6 +42,8 @@ def authority_dashboard(request):
     # Render the authority dashboard template
     return render(request, 'authority.html', context)
 
+from issues.models import Notification
+
 @login_required
 @user_passes_test(is_authority)
 def assign_contractor(request, issue_id):
@@ -55,13 +57,26 @@ def assign_contractor(request, issue_id):
         issue.contractor = contractor
         issue.status = 'pending'
         issue.save()
-        
+        if contractor:
+            # Create notifications
+            Notification.objects.create(
+                user=contractor.user,
+                message=f"You've been assigned to issue: {issue.title}",
+                related_issue=issue
+            )
+            Notification.objects.create(
+                user=issue.reported_by,
+                message=f"Contractor {contractor.name} assigned to your issue",
+                related_issue=issue
+            )
         messages.success(request, 'Contractor assigned successfully!')
         return redirect('authority_dashboard')
+        
     
-    available_contractors = Contractor.objects.filter(authority=authority, is_active=True)
+    available_contractors = Contractor.objects.filter( is_active=True)
     return render(request, 'assign_contractor.html', {
         'issue': issue,
         'contractors': available_contractors
     })
+
 

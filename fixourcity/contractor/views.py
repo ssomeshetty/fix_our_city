@@ -6,6 +6,7 @@ from .models import Contractor
 from issues.models import Issue, ContractorAssignment
 from django.db import models  # <-- Add this import
 from django.db.models import Avg, Count
+from issues.models import Notification
 
 def is_contractor(user):
     return user.role == 'contractor'
@@ -16,7 +17,13 @@ def contractor_dashboard(request):
     contractor = get_object_or_404(Contractor, user=request.user)
     assigned_issues = Issue.objects.filter(contractor=contractor).exclude(status='completed')
     completed_issues = Issue.objects.filter(contractor=contractor, status='completed')
-    
+    unread_notifications_count = Notification.objects.filter(user=request.user, is_read=False).count()
+
+    context = {
+        'unread_notifications_count': unread_notifications_count,
+        # Add any other data you need here
+    }
+
     context = {
         'contractor': contractor,
         'assigned_issues': assigned_issues,
@@ -39,6 +46,16 @@ def update_issue_status(request, issue_id):
                 contractor = issue.contractor
                 contractor.total_completed_issues += 1
                 contractor.save()
+                Notification.objects.create(
+                user=issue.reported_by,
+                message=f"Issue '{issue.title}' marked as completed",
+                related_issue=issue
+            )
+            Notification.objects.create(
+                user=issue.government_authority.user,
+                message=f"Issue '{issue.title}' completed by {Contractor.name}",
+                related_issue=issue
+            )
             
             messages.success(request, f'Issue status updated to {new_status}!')
         return redirect('contractor_dashboard')

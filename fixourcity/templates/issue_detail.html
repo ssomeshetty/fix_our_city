@@ -30,6 +30,19 @@
             --text-primary: #333333;
             --text-secondary: #666666;
             --text-light: #999999;
+            --primary-color: #6C63FF;      /* Vibrant Purple */
+            --primary-light: #8B84FF;      /* Light Purple */
+            --primary-dark: #4F46E5;       /* Deep Purple */
+            --secondary-color: #00E5B6;    /* Bright Teal */
+            --secondary-light: #4AFFCE;    /* Light Teal */
+            --accent-color: #FF9100;       /* Bright Orange */
+            --accent-light: #FFB74D;       /* Light Orange */
+            --gradient-1: linear-gradient(135deg, #6C63FF 0%, #00E5B6 100%);
+            --gradient-2: linear-gradient(135deg, #FF9100 0%, #FF4081 100%);
+            --white: #ffffff;
+            --light-gray: #F8F9FA;
+            --dark-gray: #2D3436;
+            --text-color: #333333;
         }
 
         body {
@@ -39,16 +52,19 @@
             color: var(--text-primary);
         }
 
-        /* Navbar Styles */
+        /* Enhanced Navbar */
         .navbar {
-            background: var(--primary);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background: var(--gradient-1);
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.2);
             transition: all 0.3s ease;
+            padding: 15px 0;
+            animation: slideInFromTop 0.8s ease-out;
+            
         }
 
         .navbar-brand {
             font-weight: 700;
-            color: white !important;
+            color: var(--white) !important;
             transition: all 0.3s ease;
         }
 
@@ -56,15 +72,51 @@
             transform: scale(1.05);
         }
 
+        .navbar-brand i {
+            font-size: 1.8rem;
+            margin-right: 8px;
+            color: var(--accent-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
         .nav-link {
-            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            padding: 8px 15px !important;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            color: var(--white) !important;
+            position: relative;
+        }
+
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: var(--white);
             transition: all 0.3s ease;
         }
 
-        .nav-link:hover {
-            color: white !important;
-            transform: translateY(-2px);
+        .nav-link:hover:after {
+            width: 80%;
+            left: 10%;
         }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+        }  
+
 
         /* Main Content */
         .main-container {
