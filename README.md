@@ -1,5 +1,11 @@
 # FixOurCity
 
+## 🚀 Live Now
+
+The **FixOurCity** project is now deployed and running live on PythonAnywhere!  
+Access it here: [https://fixourcity.pythonanywhere.com](https://fixourcity.pythonanywhere.com)
+
+
 <div align="center">
   <h3>Transform Your City Together</h3>
   <p>A community-driven platform for reporting and resolving urban infrastructure issues</p>
