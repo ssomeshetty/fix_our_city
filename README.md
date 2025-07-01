@@ -41,7 +41,7 @@ FixOurCity is a web-based platform that empowers citizens to report, track, and 
 - **Database**: SQLite
 - **Authentication**: Django Authentication System
 - **Template Engine**: Django Templates
-- **Maps Integration**: Google Maps API (Work in Progress)
+- **Maps Integration**: Leaflet.js ,Nominatim API,Browser Geolocation API
 
 ## 🚀 Getting Started
 
