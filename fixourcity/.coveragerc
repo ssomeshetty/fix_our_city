@@ -1,0 +1,34 @@
+# .coveragerc - Coverage configuration file
+# Place this in fixourcity/.coveragerc
+
+[run]
+source = .
+omit = 
+    */venv/*
+    */migrations/*
+    manage.py
+    */settings.py
+    */wsgi.py
+    */asgi.py
+    */tests.py
+    */test_*.py
+    */__pycache__/*
+    */static/*
+    */media/*
+    */templates/*
+    db.sqlite3
+    */admin.py
+    */apps.py
+    .coverage
+    htmlcov/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+
+[html]
+directory = htmlcov

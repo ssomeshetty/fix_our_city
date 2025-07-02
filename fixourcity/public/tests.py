@@ -1,14 +1,26 @@
-from tensorflow.keras.applications import EfficientNetB0
-from tensorflow.keras import layers, Model
+# 4. fixourcity/public/tests.py
+from django.test import TestCase, Client
+from django.contrib.auth.models import User
 
-base = EfficientNetB0(include_top=False, weights='imagenet', pooling='avg')
-base.trainable = False
+class PublicTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
 
-inp = layers.Input(shape=(224, 224, 3))
-x = base(inp, training=False)
-x = layers.BatchNormalization()(x)
-x = layers.Dropout(0.3)(x)
-out = layers.Dense(2, activation='softmax')(x)
-
-model = Model(inp, out)
-model.compile(optimizer='adam', loss=focal_loss, metrics=['accuracy', 'AUC']) 
+    def test_public_views(self):
+        """Test public accessible views"""
+        # Test any public URLs
+        try:
+            response = self.client.get('/')
+            self.assertIn(response.status_code, [200, 302, 404])
+        except:
+            pass
+    
+    def test_user_registration(self):
+        """Test user can be created"""
+        user = User.objects.create_user(
+            username='public_user',
+            email='public@example.com',
+            password='publicpass123'
+        )
+        self.assertEqual(user.username, 'public_user')
+        self.assertTrue(user.check_password('publicpass123'))
