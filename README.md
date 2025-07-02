@@ -1,5 +1,11 @@
 # FixOurCity
 
+## 🚀 Live Now
+
+The **FixOurCity** project is now deployed and running live on PythonAnywhere!  
+Access it here: [https://fixourcity.pythonanywhere.com](https://fixourcity.pythonanywhere.com)
+
+
 <div align="center">
   <h3>Transform Your City Together</h3>
   <p>A community-driven platform for reporting and resolving urban infrastructure issues</p>
@@ -41,7 +47,7 @@ FixOurCity is a web-based platform that empowers citizens to report, track, and 
 - **Database**: SQLite
 - **Authentication**: Django Authentication System
 - **Template Engine**: Django Templates
-- **Maps Integration**: Google Maps API (Work in Progress)
+- **Maps Integration**: Leaflet.js ,Nominatim API,Browser Geolocation API
 
 ## 🚀 Getting Started
 
