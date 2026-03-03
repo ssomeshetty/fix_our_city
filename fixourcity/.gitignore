@@ -11,16 +11,19 @@ env/
 # Django
 *.log
 db.sqlite3
+*.sqlite3
 media/
+
+# Coverage
+.coverage
+coverage.xml
 
 # Environment variables
 .env
 
-# VS Code
+# IDE
 .vscode/
-
-# PyCharm
 .idea/
 
-# Mac
+# OS
 .DS_Store
